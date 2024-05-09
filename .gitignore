@@ -1,0 +1,5 @@
+*.bak
+*.exe
+*.user
+*.user*
+* /build/

@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>arrow-right.png</file>
+        <file>arrow-left.png</file>
+        <file>lisepp_small.bmp</file>
+        <file>lightning.png</file>
+        <file>pace4.png</file>
+        <file>bolt.png</file>
+        <file>emblem_little.png</file>
+        <file>lise_small_new.ico</file>
+        <file>pace4.ico</file>
+        <file>open.png</file>
+        <file>save.png</file>
+        <file>print.gif</file>
+        <file>cursor/finger.cur</file>
+    </qresource>
+</RCC>
