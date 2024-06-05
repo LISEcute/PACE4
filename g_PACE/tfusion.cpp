@@ -1,4 +1,3 @@
-#include <iostream>
 #include <QFormLayout>
 #include <QFileDialog>
 #include <QGridLayout>
@@ -60,7 +59,7 @@ extern FILE *mfopen(const QString& filename, const char* operand);
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 extern bool init_base(QString name);
 extern void InitRandom();
-extern FILE *f10; //, *f09, *f02;
+extern FILE *f10;
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 extern char *GetNextSymbol(char *s);
 extern char *GetNextDelimeter(char *s);
@@ -83,7 +82,7 @@ tfusion::tfusion(QWidget *parent):
   InitRandom();
   init_base();
   FFileNameEve =  localPATH + "/PACE4evt.dat";
-  //   qDebug() << FFileNameEve;
+  //qDebug() << FFileNameEve;
 
   //--------------------------------------------------------
 

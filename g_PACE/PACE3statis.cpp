@@ -160,22 +160,12 @@ void STATIS(fusion_event **a, const char* filename_evt,
   //      rewind(f05);
 
   int k=0;
-  //int size;
-
-
-  /*  Qt-Oleg
-QString filename_evt2 = QString::fromUtf8(filename_evt) + "2";
-if(QFile::exists(filename_evt2)){   QFile::remove(filename_evt2);}
-
-if(!QFile::copy(filename_evt,filename_evt2)){qDebug()<< "copy not successfull!";}
-*/
 
   QFile f5(filename_evt);  // Qt-Oleg
   if(!f5.open(QIODevice::ReadOnly)){
       qDebug() << "Could not open " << filename_evt << "!";
       return;
     }
-
 
   if(f_particles) {fprintf(f_particles,particle_title1); fprintf(f_particles,particle_title2);}
 
@@ -219,8 +209,6 @@ if(!QFile::copy(filename_evt,filename_evt2)){qDebug()<< "copy not successfull!";
       Ex_f     = BUF3a[2];
       a_Elab   = BUF3a[3];
       a_Angle  = BUF3a[4];
-
-
 
       if(f_particles && (MODE>0 && MODE<6))
         {
@@ -277,7 +265,9 @@ if(!QFile::copy(filename_evt,filename_evt2)){qDebug()<< "copy not successfull!";
 
   IB=_ENERGY*0.03333+1;
   s.flush();
-  for( I=1; I<=30; I++) {
+
+  for( I=1; I<=30; I++)
+    {
       if (I<=20) JBIN[I]=-(5*I-1);
       IEBIN[I]=I*IB;
 

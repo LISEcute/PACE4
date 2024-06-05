@@ -1,5 +1,5 @@
-#define PACE_version "Version 4.34.14"
-#define PACE_date    "Last revision 16-AUG-2023"
+#define PACE_version "Version 4.34.15"
+#define PACE_date    "Last revision 05-JUN-2024"
 
 #define Max_NCASC 1000000 //32767
 #define Max_EBIN  4000
@@ -114,6 +114,10 @@
 //============================================================================
 // 4.34.14    08/16/23
 // Bug: Corrections with AZ-gate (DB request)
+//============================================================================
+// 4.34.15    06/05/24
+// Project has been updated for Windows path and macOS use
+// main.cpp has been compresssed
 
 
 //============================================================================

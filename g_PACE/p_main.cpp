@@ -24,13 +24,6 @@ int useHighDpiScaling=1;
 
 int main(int argc, char *argv[])
 {
-
-//getDPIscaling();
-//if(!useHighDpiScaling)
-//  QCoreApplication::setAttribute(Qt::AA_Use96Dpi);
-
-//   QApplication::setAttribute(useHighDpiScaling ? Qt::AA_EnableHighDpiScaling :
-//                                                   Qt::AA_DisableHighDpiScaling);
 //--------------------------------------------------------------------------------------
     QApplication app(argc, argv);
     LISErootPATH = QCoreApplication::applicationDirPath();
@@ -74,21 +67,10 @@ int main(int argc, char *argv[])
     palette.setColor(QPalette::Light, QColor(255, 255, 255)); //set the light part of the sunken border palette
     palette.setColor(QPalette::Dark, QColor(159, 159, 159)); //set the dark part of the sunken border palette
 
-    // Set disabled line edit style
-    /*  QString existingStyleSheet = qtApp.styleSheet();
-  QString disabledLineEditStyle = QString("QLineEdit:disabled { color: %1; }").arg(LE_tc_disabled.name());
-  QString disabledButtonStyle = QString("QPushButton:disabled { background-color: %1; color: %2; }")
-      .arg(LE_bg.name())
-      .arg(LE_tc_disabled.name());
-  QString updatedStyleSheet = existingStyleSheet + disabledLineEditStyle + disabledButtonStyle;
-  qtApp.setStyleSheet(updatedStyleSheet);
-*/
-
     QColor bg_disabled(215, 220, 215);
     QColor tc_disabled(145,150,145);
 
     palette.setColor(QPalette::Disabled, QPalette::Button, bg_disabled); // Set disabled QLineEdit background color
-    //  palette.setColor(QPalette::Disabled, QPalette::Base, bg_disabled); // Set disabled QLineEdit background color
     palette.setColor(QPalette::Disabled, QPalette::Text, tc_disabled); // Set disabled QLineEdit text color
     palette.setColor(QPalette::Disabled, QPalette::WindowText, tc_disabled); // Set disabled QLineEdit text color
     palette.setColor(QPalette::Disabled,  QPalette::ButtonText, tc_disabled); // set button text color

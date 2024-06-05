@@ -1,13 +1,13 @@
 #include "ParticleStates.h"
 //#include <time.h>
 #include "fisrot.h"
-#include <iostream>
+//#include <iostream>
 #include <QDebug>
 #include <QApplication>
 #include <QProgressDialog>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+//#include <string.h>
 #include <math.h>
 #include "tfusion.h"
 #include "ftype.h"
@@ -172,7 +172,7 @@ double _ALEVB[Max_MOM+1] = {0};
 
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-//int tfusion::PACE3(const char *filename_rtf, const char *filename_evt, const char *filename_cs, const char *filename_particles)//, QString html_results)
+
 int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
                 const char *filename_cs, const char *filename_particles,
                 const char *filename_html)
@@ -199,12 +199,10 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
   // extern bool INTRAC;
   char  NTITL_B[2][5]={"VOL ","SURF"};
   double SPROB=0,TPROB=0,ECLOSS=0, EXMIN=0;
-  //fusion_event  csi, c, csf, **a;
+
   fusion_event  csi, csf, **a;
   fusion_event c;
 
-  //     time_t ti = time(0);      v.4.34.2
-  //    struct tm *mytime = localtime(&ti);
   QDate mydate = QDate::currentDate();
   QTime mytime = QTime::currentTime();
 
@@ -436,9 +434,10 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
       fprintf(f09,"\\par  *** G.S. level density little a multiplied by %.3f to "
                   "obtain saddle point level density for fission calculation"
                   "\\par  *** Zero spin fission barrier is %6.2f MeV",_ARATIO,FISSBR);
-      *htmlStream << "<p> *** G.S. level density little a multiplied by " << QString::number(_ARATIO,'g',4) << " to "
-                                                                                                               "obtain saddle point level density for fission calculation</p>"
-                                                                                                               "<p> *** Zero spin fission barrier is " << QString::number(FISSBR,'g',3) << "</p>";
+      *htmlStream << "<p> *** G.S. level density little a multiplied by " <<
+                     QString::number(_ARATIO,'g',4) << " to "
+                     "obtain saddle point level density for fission calculation</p>"
+                     "<p> *** Zero spin fission barrier is " << QString::number(FISSBR,'g',3) << "</p>";
     }
 
   if(_FACLA==0.)
@@ -954,7 +953,7 @@ L3882:
           IBUF2[8]=(short int)c.Z;
           IBUF2[9]=(short int)c.N;
           //MK            buf2List << csi.J << csf.J << csi.MJ << (c.Ex + 1.) << (EP+10.+1.) << c.Z << c.N;
-          fwrite(IBUF2, sizeof(short int), 10, f02);
+          //fwrite(IBUF2, sizeof(short int), 10, f02);
           //MK            buf2Link << buf2List;
           //MK            buf2List.clear();
         }
@@ -992,7 +991,7 @@ L3882:
           BUF3[3]=(float)a[I]->particle_energy;
           BUF3[4]=(float)a[I]->particle_angle;
 
-          fwrite(BUF3,sizeof(float),5,f02);
+          //fwrite(BUF3,sizeof(float),5,f02);
         }
       if(a[I]->Ex>0.&&_IPROB==0) goto L3882;
     }

@@ -11,14 +11,19 @@ OBJECTS_DIR = obj
 
 
 win32-g++ {
-DESTDIR = c:/PACE4/_install
+DESTDIR = C:/PACE4/_install
+#DESTDIR = ../../_install
 }
 win32-msvc {
-DESTDIR = c:/PACE4/_install_MSVC
+DESTDIR = ../../_install_MSVC
 }
 
-win32:VERSION = 4.34.14.1 # major.minor.patch.build
-else:VERSION = 4.34.14    # major.minor.patch
+macx {
+DESTDIR = /Users/arjunray/Desktop/FRIB/PACE4/_install_MSVC/lisecfg/AME_DB.sqlite
+}
+
+win32:VERSION = 4.34.15.1 # major.minor.patch.build
+else:VERSION = 4.34.15    # major.minor.patch
 
 win32 {
        QMAKE_TARGET_COPYRIGHT = "LISE group at FRIB/MSU"
@@ -38,7 +43,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-
 
 SOURCES += \
     g_PACE/lise_mass.cpp \
@@ -93,6 +97,9 @@ RESOURCES += \
 
 RC_ICONS += g_PACE/icons/pace4.ico
 
-#DEFINES += __APPLE_
-#ICON = ./Icons_macos/pace4.icns
-#QMAKE_INFO_PLIST = ./Info.plist
+# Check if the platform is macOS
+macx {
+   DEFINES += __APPLE_
+   ICON = ./Icons_macos/pace4.icns
+   QMAKE_INFO_PLIST = ./Info.plist
+}
