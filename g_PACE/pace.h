@@ -29,8 +29,13 @@ private:
                double &CS_CN, double &ECLOSS, int &INPUT, QTextStream& s);
     void AMASS(double *A, fusion_event &c, int MODE, int& MEBIN, int *MAXJ, int *MAXJS,
                      double *EBIN, double *RLEV, int &IXPR, double *BE, QTextStream& s);
+
+    // void CHNPRB(int IPOT,int IXR, fusion_event &c, double SC,double SE,double *RLEV,double& PROBM, int *MAXJ,
+    //         int *MAXJS, double *EBIN, int IXMIN, QTextStream& s);
+
     void CHNPRB(int IPOT,int IXR, fusion_event &c, double SC,double SE,double *RLEV,double& PROBM, int *MAXJ,
-            int *MAXJS, double *EBIN, int IXMIN, QTextStream& s);
+                int *MAXJS, double *EBIN, int IXPR, int IXMIN, QTextStream& s);
+
     double FISROT(double A, double Z, double AL, double BARFAC);
     double SIERK(double A , double Z, double AL, double BARFAC);
     void OUTEM(int ICTL, QTextStream& s, int MODE=0, double EEML=0, double AEML=0);

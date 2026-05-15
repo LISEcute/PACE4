@@ -813,8 +813,10 @@ L29:       //  CIKL here
       PROBM[K]=0.;                      //     PROBM IS MAXIMUM PROBABILITY FOR MODE (CHANNEL) K.
       if(EXRSM[K]<=0.) continue;
       //     CHNPRB GIVES PROBABILITY FOR ALL CELLS IN MODE K
+
       CHNPRB(K,IXRSM[K],c,SC,_SPART[K],
-             _RLEV[K-1],PROBM[K],_MAXJ[K],_MAXJS[K],_EBIN[K],IXMIN[K],*htmlStream);
+             _RLEV[K-1],PROBM[K],_MAXJ[K],_MAXJS[K],_EBIN[K],
+             IXPR[K], IXMIN[K], *htmlStream);
     }
 
 
