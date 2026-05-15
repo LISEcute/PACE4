@@ -590,7 +590,7 @@ L5:   AJR=JSR-1+SR;
             else  PRO=0.;
             }
 
-
+/* chatGPT
       if (_DISCPR <= 0. || PROBM <= 0.) zdum1=0.;
       else {
            zdum1=logl(_DISCPR);
@@ -599,6 +599,23 @@ L5:   AJR=JSR-1+SR;
            }
 
       if(PRO<=zdum1)goto L6;
+*/
+      //============================================= chatGPT insert begin
+      zdum1 = 0.0L;
+      if(_DISCPR > 0.0 && PROBM > 0.0)
+      {
+        zdum1 = static_cast<long double>(_DISCPR) *
+                static_cast<long double>(PROBM);
+
+        if(zdum1 < 1.0E-38L)
+          zdum1 = 1.0E-38L;
+      }
+
+      if(static_cast<long double>(PRO) <= zdum1)
+        goto L6;
+      //============================================= chatGPT insert end
+
+
 //      SEE REMARK ABOUT DISCPR IN MAIN PROG.
       _IPROB++;
                         //      IPROB IS TOTAL NO. OF PROBABILITIES CALCULATED
@@ -683,6 +700,8 @@ for(I=1; I<=5; I++) {
       MJS=MAXJS[IXRSM]+JR-MAXJ[IXRSM];
 
       PRO=RLEV[MJS]*PROB1;
+
+/* chatGPT
       if (_DISCPR<=0.||PROBM<=0.) zdum1=0.;
       else {
            zdum1=logl(_DISCPR);
@@ -691,6 +710,22 @@ for(I=1; I<=5; I++) {
            }
 
       if(PRO <= zdum1)continue;
+*/
+      //============================================= chatGPT insert begin
+
+      zdum1 = 0.0L;
+      if(_DISCPR > 0.0 && PROBM > 0.0)
+      {
+        zdum1 = static_cast<long double>(_DISCPR) *
+                static_cast<long double>(PROBM);
+
+        if(zdum1 < 1.0E-38L)
+          zdum1 = 1.0E-38L;
+      }
+
+      if(static_cast<long double>(PRO) <= zdum1)
+        continue;
+      //============================================= chatGPT insert end
 
       _IPROB++;
 
