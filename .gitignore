@@ -3,3 +3,4 @@
 *.user
 *.user*
 * /build/
+_install_MSVC/
