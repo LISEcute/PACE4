@@ -977,7 +977,7 @@ L3882:
           IBUF2[8]=(short int)c.Z;
           IBUF2[9]=(short int)c.N;
           //MK            buf2List << csi.J << csf.J << csi.MJ << (c.Ex + 1.) << (EP+10.+1.) << c.Z << c.N;
-          fwrite(IBUF2, sizeof(short int), 10, f02);
+          //chatGPT fwrite(IBUF2, sizeof(short int), 10, f02);
           //MK            buf2Link << buf2List;
           //MK            buf2List.clear();
         }
@@ -1015,7 +1015,8 @@ L3882:
           BUF3[3]=(float)a[I]->particle_energy;
           BUF3[4]=(float)a[I]->particle_angle;
 
-          fwrite(BUF3,sizeof(float),5,f02);
+          //chatGPT fwrite(BUF3,sizeof(float),5,f02);
+          writeCurrentTracebackRecord();
         }
       if(a[I]->Ex>0.&&_IPROB==0) goto L3882;
     }
