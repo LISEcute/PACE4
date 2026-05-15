@@ -484,7 +484,7 @@ static int MEBINT=0;
 static int IXPR=0;
 
 
-long double zdum1,zdum2;
+long double zdum1;
 
 //
 //      WEISSKOPF UNITS FOR GAMMA DEEXCITATION
@@ -590,17 +590,6 @@ L5:   AJR=JSR-1+SR;
             else  PRO=0.;
             }
 
-/* chatGPT
-      if (_DISCPR <= 0. || PROBM <= 0.) zdum1=0.;
-      else {
-           zdum1=logl(_DISCPR);
-           zdum2=logl(PROBM);
-           if ((zdum1+zdum2)<-87.)  zdum1=1.E-38;
-           }
-
-      if(PRO<=zdum1)goto L6;
-*/
-      //============================================= chatGPT insert begin
       zdum1 = 0.0L;
       if(_DISCPR > 0.0 && PROBM > 0.0)
       {
@@ -613,7 +602,6 @@ L5:   AJR=JSR-1+SR;
 
       if(static_cast<long double>(PRO) <= zdum1)
         goto L6;
-      //============================================= chatGPT insert end
 
 
 //      SEE REMARK ABOUT DISCPR IN MAIN PROG.
@@ -686,7 +674,8 @@ while(true) {
       int JR;
       double PROB1=0;
 
-for(I=1; I<=5; I++) {
+for(I=1; I<=5; I++)
+      {
       JR=I+L;
       AJR=JR-1+SR;
 
@@ -701,17 +690,6 @@ for(I=1; I<=5; I++) {
 
       PRO=RLEV[MJS]*PROB1;
 
-/* chatGPT
-      if (_DISCPR<=0.||PROBM<=0.) zdum1=0.;
-      else {
-           zdum1=logl(_DISCPR);
-           zdum2=logl(PROBM);
-           if ((zdum1+zdum2)<-87.) zdum1=1.E-38;
-           }
-
-      if(PRO <= zdum1)continue;
-*/
-      //============================================= chatGPT insert begin
 
       zdum1 = 0.0L;
       if(_DISCPR > 0.0 && PROBM > 0.0)
@@ -725,7 +703,6 @@ for(I=1; I<=5; I++) {
 
       if(static_cast<long double>(PRO) <= zdum1)
         continue;
-      //============================================= chatGPT insert end
 
       _IPROB++;
 
