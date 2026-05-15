@@ -32,9 +32,9 @@ int  NDIST[31][ 21][7], IEBIN[31],JBIN[21];
 void STATIS(fusion_event **a, const char* filename_evt,
             ClassParticleFlags &ParticleFlags, QTextStream& s)
 {
-  //     WRITTEN BY A. GAVRON
+  //     WRITTEN BY A. GAVRON transported by O.Tarasov
 
-  double  ECM[6], DSPIN[6],  PF[31];
+  double  ECM[7], DSPIN[7],  PF[31];
   //int    NSPC[31][3], NPF[31], NTFISS[31][21][7];
   //int    NSPC[31][4], NPF[31], NTFISS[32][22][8];
   int    NSPC[32][4], NPF[31], NTFISS[32][22][8];
@@ -57,7 +57,7 @@ void STATIS(fusion_event **a, const char* filename_evt,
   //extern double _ERGCS[5017];
   //extern int    _IZCS[5017],_INCS[5017],_JCS[5017],_MJCS[5017];
 
-  int IZQ[201], INQ[201],  NTOT[6];
+  int IZQ[201], INQ[201],  NTOT[7];
   double YJM[31][21];
 
   const char *NTITL[7]={"    ","NEUT","PROT","ALPH","G-E1","G-E2","FISS"};
@@ -442,7 +442,8 @@ L170:
 
   for(K=1; K<=6; K++)
     {
-      ECM[K]=DSPIN[K]=NTOT[K]=0;
+      ECM[K]=DSPIN[K]=0;
+      NTOT[K]=0;
 
       for(I=1; I<=30; I++)
         for(J=1; J<=20; J++)
