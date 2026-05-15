@@ -69,20 +69,23 @@ extern double FA[204];
 
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+
+namespace
+{
+constexpr int RLEV_MODE_STRIDE = 79696;  // legacy PACE4 encoding stride
+}
+
+
 void AMASS(double *A, fusion_event &c, int MODE, int &MEBIN, int *MAXJ, int *MAXJS,
                  double *EBIN, double *RLEV, int &IXPR, double *BE, QTextStream &s);
 void RANGE(int MODE,int &IMIN,int &IMAX, double Ex);
-
 void FIND(double E, int &IXRSM, double *EBIN, int MEBIN, int MODE, QTextStream &s);
-
-
 void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EFIRST,
      double EMAX, double DELEX, double SR, int &KK, int &MEBIN, int IXPR, int *MAXJ,
      int *MAXJS, double *EBIN, double *RLEV, QTextStream &s);
 void SEARCH(fusion_event *a, fusion_event &c, int &MODE, QTextStream &s);
 void MJRAN(fusion_event &csi, fusion_event &csf, int MODE, double EP, QTextStream &s);
 double C3J(double FJ1,double FJ2,double FJ3,double FM1,double FM2,double FM3);
-
 
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
@@ -504,7 +507,7 @@ double   SR=fabs(SC-SE);
 
       int JSC=c.J;
       int JMAX=c.J;
-      int MODUL=(IPOT-1)*79696;
+      int MODUL=(IPOT-1)*RLEV_MODE_STRIDE;
       int AJC=c.J-1+SC;
       double ECM=0, AJR=0, SUMTL=0, DJ=0, SJ=0;
       int IGO=0, JSR=0, I, IZZ, INN, LLMAX=0, LLM=0, LMAX=0, LMIN=0, LM1, LM2;
@@ -813,19 +816,19 @@ else {
               I=IS+1;
            }
       }
-      MODE=_MJ[I]/79696+1;
+      MODE=_MJ[I]/RLEV_MODE_STRIDE+1;
 
       if(MODE>=5) {
                 a->Ex=-1.; // it means FISSION
                 return;
                 }
 
-//      IBIN IS PLACE IN 79696 LONG VECTOR OF ONE SPECIFIC MODE.
+//      IBIN IS PLACE IN RLEV_MODE_STRIDE LONG VECTOR OF ONE SPECIFIC MODE.
       a->init(c.Z-_IZPART[MODE],c.N-_INPART[MODE]);
 
       MJI=_MJ[I];
-      IBIN=((MJI)%(79696));
-      if(IBIN==0)IBIN=79696;
+      IBIN=((MJI)%(RLEV_MODE_STRIDE));
+      if(IBIN==0)IBIN=RLEV_MODE_STRIDE;
       MEB=_MEBIN[MODE];
       for(I=1; I<=MEB; I++) if(_MAXJS[MODE][I] >= IBIN)goto L10;
 
