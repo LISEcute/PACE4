@@ -1,5 +1,5 @@
-#define PACE_version "Version 4.34.16"
-#define PACE_date    "Last revision 05-MAY-2026"
+#define PACE_version "Version 4.35.1"
+#define PACE_date    "Last revision 15-MAY-2026"
 
 #define Max_NCASC 1000000 //32767
 #define Max_EBIN  4000
@@ -123,6 +123,18 @@
 // 4.34.16    05/15/26
 // starting PACE optimization with openAI
 // "Use traceback record helper for event writing"
+
+//============================================================================
+// 4.35.1    05/15/26
+// comparison of PACE2 and PACE using openAI
+ // Traceback event writing protected
+ // CHNPRB probability cutoff restored to PACE2 logic
+ // CHNPRB energy-bin stopping condition restored
+ // Legacy RLEV stride named
+ // Bad YJM normalization reverted
+ // STATIS mode-array out-of-bounds fixed
+ // GCLVD variable PACE2 binning restored
+ // Compiles successfully
 
 
 //============================================================================
