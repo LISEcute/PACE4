@@ -1,5 +1,5 @@
-#define PACE_version "Version 4.34.14"
-#define PACE_date    "Last revision 16-AUG-2023"
+#define PACE_version "Version 4.34.16"
+#define PACE_date    "Last revision 05-MAY-2026"
 
 #define Max_NCASC 1000000 //32767
 #define Max_EBIN  4000
@@ -114,6 +114,15 @@
 //============================================================================
 // 4.34.14    08/16/23
 // Bug: Corrections with AZ-gate (DB request)
+
+//============================================================================
+// 4.34.15    08/16/23
+// version was retracted
+
+//============================================================================
+// 4.34.16    05/15/26
+// starting PACE optimization with openAI
+// "Use traceback record helper for event writing"
 
 
 //============================================================================

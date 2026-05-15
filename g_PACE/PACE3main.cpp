@@ -14,7 +14,7 @@
 #include <QTextStream>
 #include <QDate>
 #include <QTime>
-
+#include "TracebackRecord.h"  // v.4.34.15 refactor: safe traceback binary record
 
 #include "pace.h"
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
@@ -183,6 +183,27 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
   //MK    QVector<QVector<int> > buf2Link;
 
   float BUF3[5];
+
+
+  auto writeCurrentTracebackRecord = [&]() -> bool
+  {
+      TracebackRecord rec;
+
+      for(int n = 0; n < 10; ++n)
+          rec.ibuf2[n] = static_cast<qint16>(IBUF2[n]);
+
+      for(int n = 0; n < 5; ++n)
+          rec.buf3[n] = BUF3[n];
+
+      if(!writeTracebackRecord(f02, rec))
+      {
+          qDebug() << "PACE4: failed to write traceback record to" << filename_evt;
+          return false;
+      }
+
+      return true;
+  };
+
   //MK    QVector<float> buf3List(10);
   //MK    QVector<QVector<float> > buf3Link;
 
@@ -887,7 +908,8 @@ L3882:
                   //MK                    buf2List << HIGH_WORD(I) << LOW_WORD(I) << 6 << csi.J << csi.MJ << (c.Ex+1.) << 0 << c.Z << c.N;
                   //MK                    buf2Link << buf2List;
                   //MK                    buf2List.clear();
-                  fwrite(IBUF2,sizeof(short int),10,f02);
+
+                  //chatGPT  fwrite(IBUF2,sizeof(short int),10,f02);
 
                   BUF3[0]=(float)Fprob;
                   BUF3[1]=(float)c.Ex;
@@ -897,7 +919,8 @@ L3882:
                   //MK                    buf3List << Fprob << c.Ex << a[I]->Ex << a[I]->particle_energy << a[I]->particle_angle;
                   //MK                    buf3Link << buf3List;
                   //MK                    buf3List.clear();
-                  fwrite(BUF3,sizeof(float),5,f02);
+                  //chatGPT  fwrite(BUF3,sizeof(float),5,f02);
+                  writeCurrentTracebackRecord();
                 }
 
               a[I]->Z=-a[I]->Z;

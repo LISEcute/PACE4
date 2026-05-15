@@ -17,8 +17,8 @@ win32-msvc {
 DESTDIR = c:/PACE4/_install_MSVC
 }
 
-win32:VERSION = 4.34.14.1 # major.minor.patch.build
-else:VERSION = 4.34.14    # major.minor.patch
+win32:VERSION = 4.34.16.1 # major.minor.patch.build
+else:VERSION = 4.34.16    # major.minor.patch
 
 win32 {
        QMAKE_TARGET_COPYRIGHT = "LISE group at FRIB/MSU"
@@ -69,6 +69,7 @@ HEADERS  += \
     g_PACE/Constant.h \
     g_PACE/ParticleStates.h \
     g_PACE/WinLise_Constant.h \
+    g_PACE/TracebackRecord.h \
     g_PACE/fisrot.h \
     g_PACE/yrast.h \
     g_PACE/barfit.h \
