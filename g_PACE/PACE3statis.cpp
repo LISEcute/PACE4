@@ -234,8 +234,8 @@ if(!QFile::copy(filename_evt,filename_evt2)){qDebug()<< "copy not successfull!";
               Nnpa[3]++; Nnpa[mmode-1]++;
               fprintf(f_particles,particle_format,MODE,
                       Nnpa[mmode-1],Nnpa[3],INDX,a[INDX]->Z,a[INDX]->N,IZC,INC,
-                      JC,JF,MP,
-                      Fprob > 1e-10 ? Fprob : 0,Ex_i,Ex_f,a_Elab);
+                  JC,JF,MP,
+                  Fprob > 1e-10 ? Fprob : 0,Ex_i,Ex_f,a_Elab);
 
               if(mmode!=4) fprintf(f_particles,"%05.1f",a_Angle);
               fprintf(f_particles,"\n");
@@ -535,22 +535,13 @@ L210: //fprintf(f09,"450 ");
 
   for(I=1; I<=_NCASC; I++)  if(a[I]->Z>=0)NZN++;
 
-
-  for(I=1; I<=30; I++)  {
-      for(J=1; J<=20; J++)
-        {
-          const double SUMM = NTFISS[I][J][6] + 1.E-19;
-
-          SUM = SUMM;
-          for(K=1; K<=5; K++)
-            SUM += NDIST[I][J][K] + NTFISS[I][J][K];
-
-          // PACE2 active line used SUMM, not SUM:
-          //   YJM(I,J)=YJM(I,J)/SUMM
-          YJM[I][J] /= SUMM;
+  for(I=1; I<=30; I++) {
+      for(J=1; J<=20; J++) {
+          SUM=NTFISS[I][J][6]+1.E-19;
+          for(K=1; K<=5; K++)  SUM+=NDIST[I][J][K]+NTFISS[I][J][K];
+          YJM[I][J]/=SUM;
         }
     }
-
   fprintf(f09,"\\par\\par\\par\\b   M states at final J vs Ex\\b0\\fs14\\par ");
   s << "<p>&nbsp;</p><h3>  M states at final J vs Ex</h3><table>";
   for(I=1; I<=30; I++) {
