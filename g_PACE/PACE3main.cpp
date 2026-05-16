@@ -266,6 +266,19 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
 
   htmlStream = new QTextStream(htmlFile);//,QIODevice::ReadWrite);
 
+
+  auto finishPace3 = [&]() -> int
+  {
+      fprintf(f09,"}");
+      fclose(f09);
+      htmlFile->close();
+
+      for(I=0; I<=_NCASC; I++) delete a[I];
+      delete a;
+
+      return 1;
+  };
+
   if(_IDIST!=0)
     {
       f02=fopen(filename_evt,"wb");
@@ -370,7 +383,7 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
           f_particles=nullptr;
           //ParticleFlags.ClearParticleState(ep_opened);
         }
-      goto BadEnd;
+      return finishPace3();
     }
 
   //      IADEF=2 IS ASSUMED SPHERICAL NUCLEI FOR LEVEL DENSITIES.
@@ -1167,15 +1180,7 @@ L201:
   htmlStream->flush();
   // progress.setValue(countMax);
   // qApp->processEvents();
-BadEnd:
-  fprintf(f09,"}");
-  fclose(f09);
-  htmlFile->close();
-
-  for(I=0; I<=_NCASC; I++) delete a[I];
-  delete a;
-
-  return 1;
+  return finishPace3();
 }
 
 

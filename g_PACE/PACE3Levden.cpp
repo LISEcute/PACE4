@@ -73,24 +73,15 @@ extern double FA[204];
 namespace
 {
 constexpr int RLEV_MODE_STRIDE = 79696;  // legacy PACE4 encoding stride
-
-inline double pace2EnergyBinWidth(double x)
-{
-      const int i = static_cast<int>(x * 0.25);
-
-      if(i < 1)       return 0.1;
-      if(i == 1)      return 0.3;
-      return 1.0;
 }
-}
-//=====================================================
+
 
 void AMASS(double *A, fusion_event &c, int MODE, int &MEBIN, int *MAXJ, int *MAXJS,
            double *EBIN, double *RLEV, int &IXPR, double *BE, QTextStream &s);
 void RANGE(int MODE,int &IMIN,int &IMAX, double Ex);
 void FIND(double E, int &IXRSM, double *EBIN, int MEBIN, int MODE, QTextStream &s);
 void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EFIRST,
-           double EMAX, double /*DELEX*/, double SR, int &KK, int &MEBIN, int IXPR, int *MAXJ,
+           double EMAX, double DELEX, double SR, int &KK, int &MEBIN, int IXPR, int *MAXJ,
            int *MAXJS, double *EBIN, double *RLEV, QTextStream &s);
 void SEARCH(fusion_event *a, fusion_event &c, int &MODE, QTextStream &s);
 void MJRAN(fusion_event &csi, fusion_event &csf, int MODE, double EP, QTextStream &s);
@@ -316,7 +307,7 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
       int J,IEX, IE, JMX, JJ;
       int II=Max_EBIN-IXPR;
       int MAXXL=min(_MAXC+9,110);
-      double AJR, EEXRS, EEXRST, UEX, TEMP, FACT2, FACTT, AVLOG, RLEVD1;
+      double AJR,EEXRS,EEXRST, UEX, TEMP, FACT2, FACTT, AVLOG,RLEVD1;
 
 
       MEBIN=Max_EBIN;
@@ -333,31 +324,16 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
             }
 
       //--------------------------cikl start L6
-      EEXRST = EFIRST;
+      for(IEX=1; IEX<=II; IEX++) {
+                  IE=IEX+IXPR;
+                  EEXRS=EFIRST+(IEX-1)*DELEX;
+                  EEXRST=EEXRS;
+                  if(EEXRST<_EX)EEXRS=_EX;
 
-      for(IEX=1; IEX<=II; IEX++)
-            {
-                  IE = IEX + IXPR;
+                  if(EEXRST>EMAX) {MEBIN=IE-1; break;}
 
-                  const double EBN = pace2EnergyBinWidth(EEXRST);
-
-                  EEXRS = EEXRST + EBN;
-                  EEXRST = EEXRS;
-
-                  if(EEXRST < _EX)
-                        EEXRS = _EX;
-
-                  if(EEXRST > EMAX) {
-                              MEBIN = IE - 1;
-                              break;
-                        }
-
-                  EBIN[IE] = EEXRST;
-
-                  const double UEX1 = EEXRST - DELTA;
-                  UEX = EEXRS - DELTA;
-
-
+                  EBIN[IE]=EEXRST;
+                  UEX=EEXRS-DELTA;
                   if(UEX<=0 ) {
                               MAXJ[IE]=1;
                               KK++;
@@ -382,16 +358,10 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
                   JMX=MAXXL;
 
                   for(J=1; J<=MAXXL; J++) {
-                      JJ = J;
-
-                      if(FACROT[J] > UEX)
-                          break;
-
-                      if(FACROT[J] > UEX1)
-                          break;
-
-                      TWOSR[J] = 2. * J - 1. + 2. * SR;
-                  }
+                              JJ=J;
+                              if(FACROT[J]>UEX) break;     //Oleg check this break
+                              TWOSR[J]=2.*J-1.+2.*SR;
+                        }
 
                   if(J<=MAXXL) {
                               JMX=JJ-1;
@@ -414,7 +384,7 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
                                     }
 
                               RLEVD1= exp(AVLOG);
-                              RLEV[KK+J] = TWOSR[J] * RLEVD1 * RLEVD1 * EBN;
+                              RLEV[KK+J]=TWOSR[J]*RLEVD1*RLEVD1;
                         }
 
                   KK+=JMX;
@@ -831,36 +801,21 @@ void SEARCH(fusion_event *a, fusion_event &c, int &MODE, QTextStream& s)
 
       // ATTENTION with MAX*[][]  !  they was transposed!
 
-      int I, JF, IS, MJI=0, IBIN=0, MEB=0;
+      int I=1, MJI=0, IBIN=0, MEB=0;
 
       double R=RANF();
 
-      //      THE SEARCH ALGORITHM IS TO KEEP HALVING THE VECTOR AND
-      //      DECREASING LIMITS TILL INDEX IS FOUND. THE INDEX OF THE
-      //      DETERMINES THE DECAY MODE
-
-      if(R > _PROB[_IPROB])  I=_IPROB;
-      else {
-                  if(R <= _PROB[1]) I=1;
-                  else {
-                              IS=0;
-                              JF=_IPROB;
-
-L2:   JF=JF/2+1;
-                              if(JF==2)JF=1;
-                              IS = min(IS+JF,_IPROB);
-
-L3:   if(R>_PROB[IS])goto L2;
-
-L1:   JF=JF/2+1;
-                              if(JF==2)JF=1;
-                              IS=max(IS-JF,1);
-                              if(JF!=1)goto L3;
-
-                              if(R<=_PROB[IS])goto L1;
-                              I=IS+1;
-                        }
+      // _PROB[1.._IPROB] is cumulative after normalization.
+      // Find the first index for which R <= _PROB[I].
+      if(R > _PROB[_IPROB]) {
+                  I = _IPROB;
             }
+      else {
+                  I = 1;
+                  while(I < _IPROB && R > _PROB[I])
+                        ++I;
+            }
+
       MODE=_MJ[I]/RLEV_MODE_STRIDE+1;
 
       if(MODE>=5) {
@@ -875,16 +830,25 @@ L1:   JF=JF/2+1;
       IBIN=((MJI)%(RLEV_MODE_STRIDE));
       if(IBIN==0)IBIN=RLEV_MODE_STRIDE;
       MEB=_MEBIN[MODE];
-      for(I=1; I<=MEB; I++) if(_MAXJS[MODE][I] >= IBIN)goto L10;
 
-      fprintf(f09,"\\par SEARCH ERROR. MODE=%d MEBIN=%d MAXJS=%d IBIN=%d",MODE,MEB,_MAXJS[MODE][MEB],IBIN);
-      s << "<p>  SEARCH ERROR. MODE = " << qbuf.number(MODE) << " MEBIN = " << qbuf.number(MEB) << "MAXJS = " <<
-           qbuf.number(_MAXJS[MODE][MEB]) << "IBIN = " << qbuf.number(IBIN) << "</p>";
-      s.flush();
-      return;
+      int levelIndex = 0;
+      for(I=1; I<=MEB; I++) {
+            if(_MAXJS[MODE][I] >= IBIN) {
+                  levelIndex = I;
+                  break;
+                  }
+            }
 
-L10:  a->J  = _MAXJ[MODE][I]-_MAXJS[MODE][I]+IBIN;
-      a->Ex = _EBIN[MODE][I];
+      if(levelIndex == 0) {
+            fprintf(f09,"\\par SEARCH ERROR. MODE=%d MEBIN=%d MAXJS=%d IBIN=%d",MODE,MEB,_MAXJS[MODE][MEB],IBIN);
+            s << "<p>  SEARCH ERROR. MODE = " << qbuf.number(MODE) << " MEBIN = " << qbuf.number(MEB) << "MAXJS = " <<
+                 qbuf.number(_MAXJS[MODE][MEB]) << "IBIN = " << qbuf.number(IBIN) << "</p>";
+            s.flush();
+            return;
+            }
+
+      a->J  = _MAXJ[MODE][levelIndex]-_MAXJS[MODE][levelIndex]+IBIN;
+      a->Ex = _EBIN[MODE][levelIndex];
 
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW

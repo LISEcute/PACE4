@@ -22,7 +22,7 @@ struct TracebackRecord
 
 static_assert(sizeof(qint16) == 2, "TracebackRecord expects 16-bit integers");
 static_assert(sizeof(float)  == 4, "TracebackRecord expects 32-bit floats");
-//--------------------------------------------------------------------------------
+
 inline bool writeTracebackRecord(FILE* file, const TracebackRecord& rec)
 {
     if(!file)
@@ -36,7 +36,7 @@ inline bool writeTracebackRecord(FILE* file, const TracebackRecord& rec)
 
     return okIbuf && okBuf;
 }
-//--------------------------------------------------------------------------------
+
 inline bool readTracebackRecord(QDataStream& in, TracebackRecord& rec)
 {
     QIODevice* dev = in.device();
