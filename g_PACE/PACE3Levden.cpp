@@ -801,36 +801,21 @@ void SEARCH(fusion_event *a, fusion_event &c, int &MODE, QTextStream& s)
 
       // ATTENTION with MAX*[][]  !  they was transposed!
 
-      int I, JF, IS, MJI=0, IBIN=0, MEB=0;
+      int I=1, MJI=0, IBIN=0, MEB=0;
 
       double R=RANF();
 
-      //      THE SEARCH ALGORITHM IS TO KEEP HALVING THE VECTOR AND
-      //      DECREASING LIMITS TILL INDEX IS FOUND. THE INDEX OF THE
-      //      DETERMINES THE DECAY MODE
-
-      if(R > _PROB[_IPROB])  I=_IPROB;
-      else {
-                  if(R <= _PROB[1]) I=1;
-                  else {
-                              IS=0;
-                              JF=_IPROB;
-
-L2:   JF=JF/2+1;
-                              if(JF==2)JF=1;
-                              IS = min(IS+JF,_IPROB);
-
-L3:   if(R>_PROB[IS])goto L2;
-
-L1:   JF=JF/2+1;
-                              if(JF==2)JF=1;
-                              IS=max(IS-JF,1);
-                              if(JF!=1)goto L3;
-
-                              if(R<=_PROB[IS])goto L1;
-                              I=IS+1;
-                        }
+      // _PROB[1.._IPROB] is cumulative after normalization.
+      // Find the first index for which R <= _PROB[I].
+      if(R > _PROB[_IPROB]) {
+                  I = _IPROB;
             }
+      else {
+                  I = 1;
+                  while(I < _IPROB && R > _PROB[I])
+                        ++I;
+            }
+
       MODE=_MJ[I]/RLEV_MODE_STRIDE+1;
 
       if(MODE>=5) {
@@ -845,16 +830,25 @@ L1:   JF=JF/2+1;
       IBIN=((MJI)%(RLEV_MODE_STRIDE));
       if(IBIN==0)IBIN=RLEV_MODE_STRIDE;
       MEB=_MEBIN[MODE];
-      for(I=1; I<=MEB; I++) if(_MAXJS[MODE][I] >= IBIN)goto L10;
 
-      fprintf(f09,"\\par SEARCH ERROR. MODE=%d MEBIN=%d MAXJS=%d IBIN=%d",MODE,MEB,_MAXJS[MODE][MEB],IBIN);
-      s << "<p>  SEARCH ERROR. MODE = " << qbuf.number(MODE) << " MEBIN = " << qbuf.number(MEB) << "MAXJS = " <<
-           qbuf.number(_MAXJS[MODE][MEB]) << "IBIN = " << qbuf.number(IBIN) << "</p>";
-      s.flush();
-      return;
+      int levelIndex = 0;
+      for(I=1; I<=MEB; I++) {
+            if(_MAXJS[MODE][I] >= IBIN) {
+                  levelIndex = I;
+                  break;
+                  }
+            }
 
-L10:  a->J  = _MAXJ[MODE][I]-_MAXJS[MODE][I]+IBIN;
-      a->Ex = _EBIN[MODE][I];
+      if(levelIndex == 0) {
+            fprintf(f09,"\\par SEARCH ERROR. MODE=%d MEBIN=%d MAXJS=%d IBIN=%d",MODE,MEB,_MAXJS[MODE][MEB],IBIN);
+            s << "<p>  SEARCH ERROR. MODE = " << qbuf.number(MODE) << " MEBIN = " << qbuf.number(MEB) << "MAXJS = " <<
+                 qbuf.number(_MAXJS[MODE][MEB]) << "IBIN = " << qbuf.number(IBIN) << "</p>";
+            s.flush();
+            return;
+            }
+
+      a->J  = _MAXJ[MODE][levelIndex]-_MAXJS[MODE][levelIndex]+IBIN;
+      a->Ex = _EBIN[MODE][levelIndex];
 
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW

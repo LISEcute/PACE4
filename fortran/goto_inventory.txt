@@ -1,0 +1,249 @@
+g_PACE/lise_mass.cpp:250:          if(I>9) goto fin;
+g_PACE/lise_mass.cpp:284:              if (T<=0.0)               goto L190;
+g_PACE/lise_mass.cpp:285:              if (fabs(T-TO) <0.0001)   goto L185;
+g_PACE/lise_mass.cpp:289:          goto fin;
+g_PACE/lise_mass.cpp:292:L185: if (T<13.){ if (2.*EE*(1.-2.*EPS*T-V*(3.-12.*T*T+4.*pow(T,4))*exp(-T*T)) >0.0) goto L205; }
+g_PACE/lise_mass.cpp:293:          else      { if (2.*EE*(1.-2.*EPS*T) >0.0) goto L205; }
+g_PACE/lise_mass.cpp:301:              if (GL>=0.0) goto L175;
+g_PACE/pace2.cpp:393:                if(INPUTp==2)goto 101
+g_PACE/pace2.cpp:404:                if(NLL>0&&NLL<=36) goto 130
+g_PACE/pace2.cpp:406:                goto 140
+g_PACE/pace2.cpp:412:                goto 110
+g_PACE/pace2.cpp:413:             140IF (INPUTp==2) goto 150
+g_PACE/pace2.cpp:422:                if(INPUTp==2) goto 210
+g_PACE/pace2.cpp:440://              IF IT EXISTS, goto STEP 7.
+g_PACE/pace2.cpp:444://              IF IT EXISTS, goto STEP 4.
+g_PACE/pace2.cpp:445://              11) goto STEP 2.
+g_PACE/pace2.cpp:494:                goto 230
+g_PACE/pace2.cpp:511:                if(ERGCS[I]==0.) goto 310
+g_PACE/pace2.cpp:523:                goto 270
+g_PACE/pace2.cpp:524:             260IF (IZC==0) goto 250
+g_PACE/pace2.cpp:529:                if(IZCSI!=IZC || INCSI!=INC) goto 310
+g_PACE/pace2.cpp:539:                if(IAC==0&&LAT==1&&MAT==NCASC) goto 710
+g_PACE/pace2.cpp:540:                if(IAC<6) goto 710
+g_PACE/pace2.cpp:545:                if(IZC==0) goto 230
+g_PACE/pace2.cpp:569:                if(EXRSM(K)<=0.) goto 340
+g_PACE/pace2.cpp:571:                if(EXRSM(K)<=EBIN(MEBIN(K),K)) goto 340
+g_PACE/pace2.cpp:578:                if(EXRSM[I]>0.) goto 390
+g_PACE/pace2.cpp:584:                if(EXRSM[4]<=0.) goto 370
+g_PACE/pace2.cpp:586:                goto 390
+g_PACE/pace2.cpp:596:                goto 240
+g_PACE/pace2.cpp:603:                if(EXRSM(K)>0.) goto 400
+g_PACE/pace2.cpp:605:                goto 410
+g_PACE/pace2.cpp:626:                if(EXRSM(K)<=0.) goto 440
+g_PACE/pace2.cpp:632:                if(IPROB==0) goto 480
+g_PACE/pace2.cpp:639:                if(SPROB!=0.) goto 460
+g_PACE/pace2.cpp:641:                goto 480
+g_PACE/pace2.cpp:651:                if(QIF!=0.) goto 500
+g_PACE/pace2.cpp:652:                if(JC!=JCS[I]) goto 490
+g_PACE/pace2.cpp:655:                goto 500
+g_PACE/pace2.cpp:663:                if(IL==0) goto 630
+g_PACE/pace2.cpp:672:                if(IPROB!=0) goto 540
+g_PACE/pace2.cpp:674:             510IF (JCS[I]>1) goto 520
+g_PACE/pace2.cpp:678:                goto 610
+g_PACE/pace2.cpp:685:                if(JCS[I]!=JC) goto 530
+g_PACE/pace2.cpp:691:                goto 560
+g_PACE/pace2.cpp:694:                if(ERGCS[I]>=0.) goto 560
+g_PACE/pace2.cpp:698:                if(IDUMP==1) goto 550
+g_PACE/pace2.cpp:712:                goto 620
+g_PACE/pace2.cpp:725:                if(IDUMP==1) goto 590
+g_PACE/pace2.cpp:728:                if(MODE!=4) goto 580
+g_PACE/pace2.cpp:731:                if(JDDJ!=2) goto 570
+g_PACE/pace2.cpp:733:                goto 580
+g_PACE/pace2.cpp:755:                if(IDIST==0) goto 610
+g_PACE/pace2.cpp:756:                if(MODE!=MODES) goto 600
+g_PACE/pace2.cpp:764:                goto 610
+g_PACE/pace2.cpp:771:             610IF (ERGCS[I]>0.&&IPROB==0) goto 510
+g_PACE/pace2.cpp:774:                if(ISTOP==0) goto 710
+g_PACE/pace2.cpp:775:                if(IPROB!=0) goto 640
+g_PACE/pace2.cpp:782:             640IF (LERG==0) goto 650
+g_PACE/pace2.cpp:788:                goto 420
+g_PACE/pace2.cpp:797:                if(ERGCS[I]==0.) goto 680
+g_PACE/pace2.cpp:798:                if(INC!=INCS[I] || IZC!=IZCS[I]) goto 680
+g_PACE/pace2.cpp:804:                if(ERGC==0.) goto 700
+g_PACE/pace2.cpp:808:                goto 350
+g_PACE/pace2.cpp:813:                goto 240
+g_PACE/pace2.cpp:818:                if(IDIST==0) goto 730
+g_PACE/pace2.cpp:829:                if(INOTGS==0) goto 740
+g_PACE/pace2.cpp:1023:                if(R<=PROB(IPROB)) goto 10
+g_PACE/pace2.cpp:1025:                goto 70
+g_PACE/pace2.cpp:1026:              10IF (R>PROB(1)) goto 20
+g_PACE/pace2.cpp:1028:                goto 70
+g_PACE/pace2.cpp:1035:              40IF (R>PROB(IS)) goto 30
+g_PACE/pace2.cpp:1040:                if(JF==1) goto 60
+g_PACE/pace2.cpp:1041:                goto 40
+g_PACE/pace2.cpp:1042:              60IF (R<=PROB(IS)) goto 50
+g_PACE/pace2.cpp:1045:                if(MODE<5) goto 80
+g_PACE/pace2.cpp:1056:                if(MAXJS(I,MODE)>=IBIN) goto 100
+g_PACE/pace2.cpp:1084:                if(MODE!=4) goto 20
+g_PACE/pace2.cpp:1472:                        goto L140;
+g_PACE/pace2.cpp:1618:                if(INPUTp>2) goto 360
+g_PACE/pace2.cpp:1674:              10IF (IPOT==4) goto 80
+g_PACE/pace2.cpp:1680:                if(TL(1)<1.E-10) goto 70
+g_PACE/pace2.cpp:1702:                if(LMIN>LMAX) goto 50
+g_PACE/pace2.cpp:1721:                if(PRO<=DISCPR*PROBM) goto 50
+g_PACE/pace2.cpp:1725://              if(IPROB>2222)goto 60
+g_PACE/pace2.cpp:1728:                if(PRO<PROBM) goto 40
+g_PACE/pace2.cpp:1732:              40IF (JSR==1) goto 60
+g_PACE/pace2.cpp:1734:                if(JSR>MAXJ(IXRSM)) goto 70
+g_PACE/pace2.cpp:1735:                goto 30
+g_PACE/pace2.cpp:1736:              50IF (IGO==1) goto 70
+g_PACE/pace2.cpp:1737:                if(JSR==JSC) goto 40
+g_PACE/pace2.cpp:1740:                if(JSR<=MAXJ(IXRSM)) goto 30
+g_PACE/pace2.cpp:1745:                goto 10
+g_PACE/pace2.cpp:1769:                if(JR<=0) goto 140
+g_PACE/pace2.cpp:1770:                if(JR>MAXJ(IXRSM)) goto 140
+g_PACE/pace2.cpp:1771:                if(I==1 || I==5) goto 100
+g_PACE/pace2.cpp:1772:                if(I==2 || I==4) goto 110
+g_PACE/pace2.cpp:1773:                if(AJC<.1) goto 140
+g_PACE/pace2.cpp:1774:                if(AJC<.6) goto 120
+g_PACE/pace2.cpp:1776:                goto 130
+g_PACE/pace2.cpp:1778:                goto 130
+g_PACE/pace2.cpp:1780:                if(AJC<.1&&AJR<.1) goto 120
+g_PACE/pace2.cpp:1781:                goto 90
+g_PACE/pace2.cpp:1785:                if(PRO<=DISCPR*PROBM) goto 140
+g_PACE/pace2.cpp:1787:                if(IPROB>2222) goto 150
+g_PACE/pace2.cpp:1792:                if(IXRSM==IXMIN) goto 160
+g_PACE/pace2.cpp:1795:                goto 80
+g_PACE/pace2.cpp:1800:                if(ERGC>=BARR+EBIN(1)) goto 161
+g_PACE/pace2.cpp:1802:                if(IPROB>2222)goto 150
+g_PACE/pace2.cpp:1807:             161IF (IZPREV==IZR[4]&&INPREV==INR[4]) goto 170
+g_PACE/pace2.cpp:1820:                if(ISC>MAXJT[N]) goto 180
+g_PACE/pace2.cpp:1824:                if(R<.001*SUM) goto 190
+g_PACE/pace2.cpp:1831:                if(IPROB>2222) goto 150
+g_PACE/pace2.cpp:1864:                goto 60
+g_PACE/pace2.cpp:1893:                goto 60
+g_PACE/pace2.cpp:2021:   if(MODE==3) goto 150
+g_PACE/pace2.cpp:2022:   if(MODE==2) goto 140
+g_PACE/pace2.cpp:2024:   goto 160
+g_PACE/pace2.cpp:2025:140 IF (NT[2]==0) goto 210
+g_PACE/pace2.cpp:2027:   goto 160
+g_PACE/pace2.cpp:2028:150 IF (NT[3]==0) goto 210
+g_PACE/pace2.cpp:2056:   if(IWE==0) goto 210
+g_PACE/pace2.cpp:2187:                if(IWR==0) goto 50
+g_PACE/pace2.cpp:2203:              60IF (ERES(LP)>=ELOW) goto 70
+g_PACE/pace2.cpp:2205:                goto 80
+g_PACE/pace2.cpp:2208:                if(K<=30) goto 80
+g_PACE/pace2.cpp:2213:                if(L<=36) goto 90
+g_PACE/pace2.cpp:2216:                if(NP>15) goto 100
+g_PACE/pace2.cpp:2221:                if(IWR==0) goto 50
+g_PACE/pace2.cpp:2222:                if(ERES(LP)>EWR(1)) goto 110
+g_PACE/pace2.cpp:2224:                goto 140
+g_PACE/pace2.cpp:2225:             110IF (ERES(LP)>EWR(2)) goto 120
+g_PACE/pace2.cpp:2227:                goto 140
+g_PACE/pace2.cpp:2228:             120IF (ERES(LP)>EWR[3]) goto 130
+g_PACE/pace2.cpp:2230:                goto 140
+g_PACE/pace2.cpp:2232:             140IF (NP>15) goto 150
+g_PACE/pace2.cpp:2235:                goto 50
+g_PACE/pace2.cpp:2245:                if(ELOW<0.01) goto 170
+g_PACE/pace2.cpp:2263:                if(IWR==0) goto 50
+g_PACE/pace2.cpp:2279:                if(ELOW<0.01) goto 220
+g_PACE/pace2.cpp:2294:                if(IWR==0) goto 50
+g_PACE/pace2.cpp:2300:                goto 50
+g_PACE/pace2.cpp:2413:                if(MODE!=4) goto 10
+g_PACE/pace2.cpp:2428:                if(IMAX>0) goto 20
+g_PACE/pace2.cpp:2443:                if(E>=EBIN(1)&&E<=EBIN(MEBIN)) goto 10
+g_PACE/pace2.cpp:2458:              20IF (EBIN(IXRSM)>E) goto 30
+g_PACE/pace2.cpp:2460:                goto 20
+g_PACE/pace2.cpp:2462:                if(EBIN(IXRSM)>E) goto 30
+g_PACE/pace2.cpp:2491:                if(IZCS[I]<0) goto 10
+g_PACE/pace2.cpp:2496:                goto 20
+g_PACE/pace2.cpp:2598:if( IZ<19  || IZ>111) { /*if(IPRNT==0)WRITE(10, 130 );*/    goto L90;}
+g_PACE/pace2.cpp:2599:if( IZ>102 && IL>0  ) { /*if(IPRNT==0)WRITE(10, 140 );*/    goto L90;}
+g_PACE/pace2.cpp:2606:if(A<AMIN || A>AMAX) goto L90;
+g_PACE/pace2.cpp:2626:if( (A<AMIN2-5. || A>AMAX2+10.)&&IL>0) goto L100;
+g_PACE/pace2.cpp:2679:if(EL>SELMAX) goto L110;
+g_PACE/pace2.cpp:2701://                goto 110
+g_PACE/pace2.cpp:2818:                if(A<0 || G4<0.) goto 40
+g_PACE/pace2.cpp:2840:                if(MMAX<200) goto 60
+g_PACE/pace2.cpp:2850:                if(B3<0.) goto 10
+g_PACE/pace2.cpp:2852:                if(B4<0.) goto 10
+g_PACE/pace2.cpp:2854:                if(B5<0.) goto 10
+g_PACE/pace2.cpp:2856:                if(B6<0.) goto 10
+g_PACE/pace2.cpp:2870:                goto 40
+g_PACE/pace2.cpp:2929:                if(LA>=L2) goto 30
+g_PACE/pace2.cpp:2936:                if(X<=TL[I]*FAC) goto 30
+g_PACE/pace2.cpp:2952:                if(NM<=1) goto 70
+g_PACE/pace2.cpp:2965:                if(X<TM[I]*FAC) goto 70
+g_PACE/pace2.cpp:2975:                if(X<=SUM(N,ICT)) goto 90
+g_PACE/pace2.cpp:3010:                if(fabs(EBIN(MI,4)-ENERGY)<.501) goto 40
+g_PACE/pace2.cpp:3038:                if(AN<=0.) goto 60
+g_PACE/pace2.cpp:3234:                if(MODE<4) goto 40
+g_PACE/pace2.cpp:3238:                goto 40
+g_PACE/pace2.cpp:3260:                if(ITRAC==0) goto 210
+g_PACE/pace2.cpp:3278:                if(IZQ(INUC)!=IZCS(INDX) || INQ(INUC)!=INCS(INDX)) goto 90
+g_PACE/pace2.cpp:3293:                if(MODE>5) goto 90
+g_PACE/pace2.cpp:3297:                goto 90
+g_PACE/pace2.cpp:3301:                if(IZQ(INUC)!=IZCS[I] || INQ(INUC)!=INCS[I]) goto 110
+g_PACE/pace2.cpp:3305:                if(NTOT(K)==0) goto 160
+g_PACE/pace2.cpp:3308:                if(IZQ(INUC)>0) goto 120
+g_PACE/pace2.cpp:3330:                if(ISUM==0) goto 140
+g_PACE/pace2.cpp:3346:                if(IZQ[J]==IZCS[I]&&INQ[J]==INCS[I]) goto 180
+g_PACE/pace2.cpp:3351:                goto 70
+g_PACE/pace2.cpp:3383:                goto 220
+g_PACE/pace2.cpp:3385://              if(MODE==6) goto 220
+g_PACE/pace2.cpp:3386:                if(IZCS(INDX)<0) goto 220
+g_PACE/pace2.cpp:3392:                goto 210
+g_PACE/pace2.cpp:3394:                if(MODE==6) goto 210
+g_PACE/pace2.cpp:3398:                goto 210
+g_PACE/pace2.cpp:3414:                if(IDIST==0) goto 280
+g_PACE/pace2.cpp:3423:                if(NTOT(K)==0) goto 320
+g_PACE/pace2.cpp:3439:                if(ISUM==0) goto 300
+g_PACE/pace2.cpp:3457:                if(NPF(NI)<=0) goto 330
+g_PACE/pace2.cpp:3485:                if(K==6) goto 360
+g_PACE/pace2.cpp:3486:                if(NTOTF(K)==0) goto 420
+g_PACE/pace2.cpp:3492:                goto 380
+g_PACE/pace2.cpp:3522:                if(ISUM==0) goto 400
+g_PACE/pace2.cpp:3563:                goto 8102
+g_PACE/pace2.cpp:3566:                goto 8102
+g_PACE/pace2.cpp:3571:                if(ICASC(I,11)<=0)goto 8104
+g_PACE/pace2.cpp:3575:  8          211if(ICASC(I,K)!=ICASC(J,K))goto 8104
+g_PACE/pace2.cpp:3587:                if(ICASC(I,11)<=0)goto 8106
+g_PACE/pace2.cpp:3738:                if(NE==0) goto 70;
+g_PACE/pace2.cpp:3771:                if(I>LMAX) goto 40
+g_PACE/pace2.cpp:3821:                if(IIM!=4)goto 20
+g_PACE/pace2.cpp:3823:                goto 30
+g_PACE/PACE3Levden.cpp:561:                        if(TL[1]<1.E-10) goto L58;
+g_PACE/PACE3Levden.cpp:584:                        if(LMIN>LMAX)goto L6;
+g_PACE/PACE3Levden.cpp:644:                              goto L6;
+g_PACE/PACE3Levden.cpp:659:L11:  if(JSR==1)goto L10;
+g_PACE/PACE3Levden.cpp:663:L9:   if(JSR>MAXJ[IXRSM])goto L58;
+g_PACE/PACE3Levden.cpp:665:                        goto L5;
+g_PACE/PACE3Levden.cpp:668:L6:   if(JSR==JSC)goto L11;
+g_PACE/PACE3Levden.cpp:670:                        if(IGO==1)goto L58;
+g_PACE/PACE3Levden.cpp:674:                        goto L9;
+g_PACE/PACE3Levden.cpp:853:L3:   if(R>_PROB[IS])goto L2;
+g_PACE/PACE3Levden.cpp:858:                              if(JF!=1)goto L3;
+g_PACE/PACE3Levden.cpp:860:                              if(R<=_PROB[IS])goto L1;
+g_PACE/PACE3Levden.cpp:878:      for(I=1; I<=MEB; I++) if(_MAXJS[MODE][I] >= IBIN)goto L10;
+g_PACE/PACE3main.cpp:373:      goto BadEnd;
+g_PACE/PACE3main.cpp:681:  if( IAC<6 )goto L201;
+g_PACE/PACE3main.cpp:685:  if(c.Z==0)goto L100;
+g_PACE/PACE3main.cpp:765:    if(EXRSM[I]>0.)goto L129;
+g_PACE/PACE3main.cpp:773:  else            goto L100;                  //  NEW Z,N OF MAX A NEEDED
+g_PACE/PACE3main.cpp:1023:      if(a[I]->Ex>0.&&_IPROB==0) goto L3882;
+g_PACE/PACE3main.cpp:1038:      goto L29;          //     NEW SPIN NEEDED
+g_PACE/PACE3main.cpp:1062:      goto L11;
+g_PACE/PACE3main.cpp:1065:  goto L100;
+g_PACE/PACE3statis.cpp:304:  if (_ITRAC==0) goto L200;
+g_PACE/PACE3statis.cpp:431:        if (IZQ[J]==a[I]->Z && INQ[J]==a[I]->N ) goto L170;
+g_PACE/PACE3statis.cpp:436:      goto L60;
+g_PACE/PACE3statis.cpp:458:  //size=_read(f05,IBUF2,sizeof(short int)*10);      if(size <= 0)goto L210; // mpk read = _read for ISO C++ conformant
+g_PACE/PACE3statis.cpp:459:  //size=_read(f05,BUF3,sizeof(float)*5);            if(size <= 0)goto L210; // mpk read = _read for ISO C++ conformant
+g_PACE/PACE3statis.cpp:468:      goto L210;
+g_PACE/PACE3statis.cpp:526:  if (MODE>5  || a[INDX]->Z <0) goto L200;
+g_PACE/PACE3statis.cpp:533:  goto L200;
+g_PACE/PACE3util.cpp:205:  if(INPUT>1)goto L1401;
+g_PACE/PACE3util.cpp:292:      goto L7;
+g_PACE/PACE3util.cpp:336:            goto L_REPEAT;
+g_PACE/PACE3util.cpp:356:  if(_ExpSig==0.)goto L7;
+g_PACE/PACE3util.cpp:463:      if(_BarrierMode==1) goto SpecialModeForQM;
+g_PACE/PACE3util.cpp:662:  if(_LMINN==0){s << "</table>"; goto L45;}
+g_PACE/PACE3util.cpp:948:  if(IPOT==0)goto L10001;
+g_PACE/PACE3util.cpp:1076:              goto L3200;
+g_PACE/PACE3util.cpp:1133:              goto L3403;
+g_PACE/PACE3util.cpp:1210:      if(D==0  ) goto L3470;
+g_PACE/PACE3util.cpp:1262:              if(MM<=N)goto L3450;
+g_PACE/PACE3util.cpp:1271:              if (STEP==0) goto L3470;
+g_PACE/PACE3util.cpp:1277:              goto L3456;
+g_PACE/PACE3util.cpp:1435:  if(Li<=LL)goto L23;

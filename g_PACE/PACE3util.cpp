@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define dr13 (1./3.)
-#define pow_dr13(A)    pow(A,dr13)
-#define pow_mdr13(A)   pow(A,-dr13)
+//#define dr13 (1./3.)
+//#define pow_dr13(A)    pow(A,dr13)
+//#define pow_mdr13(A)   pow(A,-dr13)
 #include "ftype.h"
 #include "pace.h"
 
@@ -659,18 +659,20 @@ L7:   CS_CN=0;
   s.flush();
   SC=((IA)%(2))*0.5;
 
-  if(_LMINN==0){s << "</table>"; goto L45;}
-
-
-
-  for(LL=1; LL<=_LMINN; LL++) {  //    ANG. MOM. LMINN LESS 1 IS INDEX LMINN
-      CS_CN-=SIGJC[LL];
-      SIGJC[LL]=0.;
+  if(_LMINN==0){
+      s << "</table>";
     }
-  if (_ExpSig==0) {s << "<table>";}
-  fprintf(f09,"\\par  Compound nucleus cross section in window (mb) %10.3f",CS_CN);
-  s << "<tr><td><em>  Compound nucleus cross section in window (mb) </em></td><td>" << QString::number(CS_CN) << "</td></tr></table>";
-L45:  fprintf(f09,"\\par\\par%s",s100m);
+  else {
+      for(LL=1; LL<=_LMINN; LL++) {  //    ANG. MOM. LMINN LESS 1 IS INDEX LMINN
+          CS_CN-=SIGJC[LL];
+          SIGJC[LL]=0.;
+        }
+      if (_ExpSig==0) {s << "<table>";}
+      fprintf(f09,"\\par  Compound nucleus cross section in window (mb) %10.3f",CS_CN);
+      s << "<tr><td><em>  Compound nucleus cross section in window (mb) </em></td><td>" << QString::number(CS_CN) << "</td></tr></table>";
+    }
+
+  fprintf(f09,"\\par\\par%s",s100m);
   //s << "<p>&nbsp;</p><hr />";// << QString::fromUtf8(s100m) << "</p>";
   fprintf(f09,"\\par%s\\b           Partial cross sections (mb)\\b0", s35x);
   //  s << "<h3>  Partial cross sections (mb) </h3>";
@@ -1284,7 +1286,8 @@ L3470: GC[2]=((1.0/Q +ETA)*GC[1]-GP)/sqrt(1.0+ETASQ);
       if (L1>2)
         for(I=3; I<=L1; I++) {
             FL=I-2;
-            GC[I]=((2.0*FL+1.0)*(ETA+FL*(FL+1.0)/Q)*GC[I-1]-(FL+1.0)*sqrt(pow(FL,2)+ETASQ)*GC[I-2])/FL/sqrt(pow((FL+1.0),2)+ETASQ);
+            GC[I]=((2.0*FL+1.0)*(ETA+FL*(FL+1.0)/Q)*GC[I-1]-(FL+1.0)*
+                   sqrt(pow(FL,2)+ETASQ)*GC[I-2])/FL/sqrt(pow((FL+1.0),2)+ETASQ);
           }
 
       L5=L1+5;
@@ -1320,7 +1323,8 @@ L3200:
   SIGR=0.0;
   Li=0;
 
-L23:  FL=Li;
+  while(Li<=LL) {
+      FL=Li;
 
   if(AZP!=0.) {
       FSUBL=FC[Li+1];
@@ -1364,20 +1368,21 @@ L23:  FL=Li;
   RXX = FL*pow(0.1,(50.0/max(FL,1.0)));
   II = RXX/DX+1.0;
 
-  if (II-1 > 0) {
+  if (II-1 > 0)
+    {
       URE[II] = 1.0;
-      XII=II;
-      XII=XII/(XII-1.0);
-      URE[II+1]=pow(XII,FL);
-      UIM[II] = URE[II];
-      UIM[II+1]=URE[II+1];
+      XII = II;
+      XII = XII/(XII-1.0);
+      URE[II+1] = pow(XII,FL);
+      UIM[II]   = URE[II];
+      UIM[II+1] = URE[II+1];
     }
   else  {
       II=1;
-      URE[II]=0.;
-      URE[II+1]=1.0E-8;
-      UIM[II]=0.;
-      UIM[II+1]=1.0E-8;
+      URE[II]   = 0.;
+      URE[II+1] = 1.0E-8;
+      UIM[II]   = 0.;
+      UIM[II+1] = 1.0E-8;
     }
 
   XX=II;
@@ -1432,7 +1437,7 @@ L23:  FL=Li;
   SIGR+=SIGL[L1];
 
   Li++;
-  if(Li<=LL)goto L23;
+    }
 
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW

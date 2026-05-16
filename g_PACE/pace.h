@@ -9,7 +9,7 @@
 class PACE
 {
 public:
-    PACE(){};
+    PACE(){}
 
     int PACE3(const char *filename_rtf, const char *filename_evt, const char *filename_cs,
               const char *filename_particles, const char *filename_html);
@@ -18,6 +18,7 @@ public:
     int _ITAKE[5];
 
 private:
+
     void COMPND(int IZ, int IN, double ENERGY, int MAXC, QTextStream &s);
     void GCLDP (double AMR, double AZR, int IADEF, double &FALIT,
                 double &ALIT, double &SIGSQ, double &FACT1,
@@ -29,9 +30,6 @@ private:
                double &CS_CN, double &ECLOSS, int &INPUT, QTextStream& s);
     void AMASS(double *A, fusion_event &c, int MODE, int& MEBIN, int *MAXJ, int *MAXJS,
                      double *EBIN, double *RLEV, int &IXPR, double *BE, QTextStream& s);
-
-    // void CHNPRB(int IPOT,int IXR, fusion_event &c, double SC,double SE,double *RLEV,double& PROBM, int *MAXJ,
-    //         int *MAXJS, double *EBIN, int IXMIN, QTextStream& s);
 
     void CHNPRB(int IPOT,int IXR, fusion_event &c, double SC,double SE,double *RLEV,double& PROBM, int *MAXJ,
                 int *MAXJS, double *EBIN, int IXPR, int IXMIN, QTextStream& s);

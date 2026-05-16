@@ -781,11 +781,11 @@ void TLLL(double ER, int NP,int IZ,int IN, double TL[25], int &LLMAX, QTextStrea
   //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
   static double  TLPN[3][13][31],TLAL[25][31],TLT[Max_MOM+1],DE[4],LL[4][31], DE1[4];
 
-  const char *NMODE[5][7]={"    ","Neutron","Proton","Alpha","HI"};
-  char s52[128]="\\par\\par\\b  Mode = \\cf3 %s\\cf0\\b0 "
+  const char *NMODE[5] = {"    ","Neutron","Proton","Alpha","HI"};
+  const char *s52 = "\\par\\par\\b  Mode = \\cf3 %s\\cf0\\b0 "
                 "\\par\\b   EP / L       0     1     2     3     4     5     6     7     8     9    10    11\\b0 ";
-  char s52html1[53] = "<p>&nbsp;</p><p><b> Mode = <span style=\"color:blue\">";
-  char s52html2[169] = "</span></b></p><table><tr><th>EP / L</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th></tr>";
+  const char *s52html1 = "<p>&nbsp;</p><p><b> Mode = <span style=\"color:blue\">";
+  const char *s52html2 = "</span></b></p><table><tr><th>EP / L</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th></tr>";
   //     CHANGE 'CTLL' TO BLANKS TO OBTAIN TRANSMISSION COEFF PRINTOUT
 
   //      double PROB;
@@ -813,7 +813,7 @@ void TLLL(double ER, int NP,int IZ,int IN, double TL[25], int &LLMAX, QTextStrea
           if(_IDIST==2){
               tab = true;
               fprintf(f09,s52,NMODE[IP]);
-              s << s52html1 << NMODE[IP]<< s52html2;
+              s << s52html1 <<  QString::fromLatin1(NMODE[IP]) << s52html2;
             }
           for(int IEN=1; IEN<=30; IEN++) {
 
@@ -851,7 +851,7 @@ void TLLL(double ER, int NP,int IZ,int IN, double TL[25], int &LLMAX, QTextStrea
       if(_IDIST==2){
           tab = true;
           fprintf(f09,s52,NMODE[IP]);
-          s << s52html1 << NMODE[IP] << s52html2;
+          s << s52html1 <<  QString::fromLatin1(NMODE[IP]) << s52html2;
         }
 
       for(int IEN=1; IEN<=30; IEN++) {

@@ -1,7 +1,7 @@
-#define PACE_version "Version 4.35.1"
+#define PACE_version "Version 4.35.4"
 #define PACE_date    "Last revision 15-MAY-2026"
 
-#define Max_NCASC 1000000 //32767
+#define Max_NCASC 1000000
 #define Max_EBIN  4000
 #define Max_MOM   200
 #define DIM_EBIN  (Max_EBIN+1)
@@ -135,7 +135,20 @@
  // STATIS mode-array out-of-bounds fixed
  // GCLVD variable PACE2 binning restored
  // Compiles successfully
+//  PACE3statis optimization with goto
 
+//============================================================================
+// 4.35.2    05/15/26
+// git revert --no-edit 78f4611
+// problem with G-E1
+
+//============================================================================
+// 4.35.3    05/15/26
+// working on goto
+
+//============================================================================
+// 4.35.4    05/15/26
+// output format correction
 
 //============================================================================
 

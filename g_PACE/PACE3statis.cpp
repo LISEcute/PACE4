@@ -35,11 +35,9 @@ void STATIS(fusion_event **a, const char* filename_evt,
   //     WRITTEN BY A. GAVRON transported by O.Tarasov
 
   double  ECM[7], DSPIN[7],  PF[31];
-  //int    NSPC[31][3], NPF[31], NTFISS[31][21][7];
-  //int    NSPC[31][4], NPF[31], NTFISS[32][22][8];
   int    NSPC[32][4], NPF[31], NTFISS[32][22][8];
   //=========      common/QMMJ/
-  extern double /*_FYRST,_FACLA,*/_EROT[Max_MOM+1];
+  extern double _EROT[Max_MOM+1];
   //extern int    _MAXC;
 
 
@@ -61,31 +59,11 @@ void STATIS(fusion_event **a, const char* filename_evt,
   double YJM[31][21];
 
   const char *NTITL[7]={"    ","NEUT","PROT","ALPH","G-E1","G-E2","FISS"};
-  //QString NTITL[7]={"    ","NEUT","PROT","ALPH","G-E1","G-E2","FISS"};
+
   const char *particle_format ="%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%-7.1e\t%-6.1f\t%-6.1f\t%-6.1f\t ";
   const char *particle_title1 = "Decay\tN\tN\tChain\tZ_f\tN_f\tZc\tN_c\tJ_c\tJf\tM_Jc\tFission\tEx_i\tEx_f\tEp_Lab\tAp_Lab\n";
   const char *particle_title2 = "Mode\tmode\tAll\t\tfinal\tfinal\temitter\temitter\tinit\tfinal\tproj-n\tprob\tMeV\tMeV\tMeV\tdeg\n";
 
-  /*              IBUF2[0]=HIGH_WORD(I);
-              IBUF2[1]=LOW_WORD(I);
-              IBUF2[2]=(short int)(MODE+IE12);
-              IBUF2[3]=(short int)csi.J;
-              IBUF2[4]=(short int)csf.J;
-              IBUF2[5]=(short int)csi.MJ;
-              IBUF2[6]=(short int)(c.Ex+1.);
-              IBUF2[7]=(short int)(EP*10.+1.);
-              IBUF2[8]=(short int)c.Z;
-              IBUF2[9]=(short int)c.N;
-
-      MODE = IBUF2[2];
-      JC   = IBUF2[3];
-      JF   = IBUF2[4];
-      MP   = IBUF2[5];
-      IE   = IBUF2[6];
-      IP   = IBUF2[7];
-      IZC  = IBUF2[8];
-      INC  = IBUF2[9];
-*/
 
   //      THE ABOVE CAN PROVIDE DETAILED INFORMATION ON ALL CASCADES
   //      LEADING TO ANY SPECIFIC FINAL NUCLEUS.
@@ -119,16 +97,10 @@ void STATIS(fusion_event **a, const char* filename_evt,
   int NTT=0;
   //s10m="           ";
 
-  char ss520[200]= "\\par  Excitation energy window - average =\\b  %-6.1f\\b0    FMHW = \\b %-6.1f\\b0 "
+  const char *ss520 = "\\par  Excitation energy window - average =\\b  %-6.1f\\b0    FMHW = \\b %-6.1f\\b0 "
                    "\\par  Spin window              - average =\\b  %-6.1f\\b0    FMHW = \\b %-6.1f\\b0 ";
-  //QString s520 = "\\par  Excitation energy window - average =\\b  %-6.1f\\b0    FMHW = \\b %-6.1f\\b0 \n\\par  Spin window              - average =\\b  %-6.1f\\b0    FMHW = \\b %-6.1f\\b0 ";
-  char ss520b[200] ="\\par  Average fabs projection   \\b %.1f\\b0     Average rms proj \\b %.1f\\b0 ";
-  //QString s520b = "\\par  Average fabs projection   \\b %.1f\\b0     Average rms proj \\b %.1f\\b0 ";
 
-  //char ss520[200] = " Excitation energy window - average =  %-6.1f   FMHW = %-6.1f Spin window   - average = %-6.1f    FMHW =  %-6.1f ";
-
-  //for(I=1; I<=31; I++) for(K=1; K<=3;  K++)   NSPC[I][K]=0;
-  //for(I=1; I<=31; I++) for(K=1; K<=21; K++) for(L=1; L<=7; L++)   NTFISS[I][K][L]=0;
+  const char *ss520b ="\\par  Average fabs projection   \\b %.1f\\b0     Average rms proj \\b %.1f\\b0 ";
 
   for(I=1; I<=31; I++){
       for(K=1; K<=3;  K++){ //for(K=1; K<=3;  K++){
@@ -157,18 +129,9 @@ void STATIS(fusion_event **a, const char* filename_evt,
 
   for(I=1; I<=31; I++) _EROT[I]=0.1*I-0.05;
 
-  //      rewind(f05);
 
   int k=0;
-  //int size;
 
-
-  /*  Qt-Oleg
-QString filename_evt2 = QString::fromUtf8(filename_evt) + "2";
-if(QFile::exists(filename_evt2)){   QFile::remove(filename_evt2);}
-
-if(!QFile::copy(filename_evt,filename_evt2)){qDebug()<< "copy not successfull!";}
-*/
 
   QFile f5(filename_evt);  // Qt-Oleg
   if(!f5.open(QIODevice::ReadOnly)){
@@ -186,12 +149,10 @@ if(!QFile::copy(filename_evt,filename_evt2)){qDebug()<< "copy not successfull!";
   in.setFloatingPointPrecision(QDataStream::SinglePrecision);
   f5.seek(0);
   short int IBUF2a[10];
-  //qint16 IBUF2a[10];
   float BUF3a[5];
-  while(true) {
 
-      //  size=_read(f05,IBUF2,sizeof(short int)*10);      if(size<=0)break;
-      //  size=_read(f05,BUF3,sizeof(float)*5);            if(size<=0)break;
+  while(true)
+    {
 
       if(!f5.bytesAvailable()){
           break;
@@ -219,8 +180,6 @@ if(!QFile::copy(filename_evt,filename_evt2)){qDebug()<< "copy not successfull!";
       Ex_f     = BUF3a[2];
       a_Elab   = BUF3a[3];
       a_Angle  = BUF3a[4];
-
-
 
       if(f_particles && (MODE>0 && MODE<6))
         {
@@ -288,154 +247,134 @@ if(!QFile::copy(filename_evt,filename_evt2)){qDebug()<< "copy not successfull!";
   IZQ[INUC]=a[1]->Z;
   INQ[INUC]=a[1]->N;
 
-L60:  //lseek(f05,0,SEEK_SET);
-  //qDebug() << "seek_set = " << SEEK_SET;
-  //L60:  in.skipRawData(SEEK_SET);
-  f5.seek(SEEK_SET);
+  bool hasNucleusToProcess = true;
 
-  // Initializing the NDIST array
-  for(K=1; K<=5; K++) {
-      ECM[K]=DSPIN[K]=NTOT[K]=0;
-      for(I=1; I<=30; I++)
-        for(J=1; J<=20; J++)
-          NDIST[I][J][K]=0;
-    }
+  while(hasNucleusToProcess)
+    {
+      f5.seek(SEEK_SET);
 
-  if (_ITRAC==0) goto L200;
+      // Initializing the NDIST array
+      for(K=1; K<=5; K++)
+        {
+          ECM[K]=DSPIN[K]=NTOT[K]=0;
+          for(I=1; I<=30; I++)
+            for(J=1; J<=20; J++)
+              NDIST[I][J][K]=0;
+        }
+
+      if(_ITRAC!=0)
+        {
+          while(f5.bytesAvailable()) {
+              for(int i=0;i<10;i++){
+                  in >> IBUF2a[i];
+                }
+              for(int i=0;i<5;i++){
+                  in >> BUF3a[i];
+                }
+              k++;
+              INDX = TWO_WORDS(IBUF2a[0],IBUF2a[1]);
+
+              MODE = IBUF2a[2];
+              JC   = IBUF2a[3];
+              JF   = IBUF2a[4];
+              MP   = IBUF2a[5];
+              IE   = IBUF2a[6];
+              IP   = IBUF2a[7];
+              IZC  = IBUF2a[8];
+              INC  = IBUF2a[9];
+
+              Fprob    = BUF3a[0];
+              Ex_i     = BUF3a[1];
+              Ex_f     = BUF3a[2];
+              a_Elab   = BUF3a[3];
+              a_Angle  = BUF3a[4];
+
+              if(IZQ[INUC]!=a[INDX]->Z || INQ[INUC]!=a[INDX]->N)
+                continue;
+
+              IP=(IP+9)/10;             //     CHANGE SCALE TO 1 MEV BINS
+              GFS+=Fprob;
+              SFE+=IE*Fprob;
+              TFE+=IE*IE*Fprob;
+              SFS+=JC*Fprob;
+              TFS+=JC*JC*Fprob;
+              SFM+=Fprob*MP;
+              TFM+=Fprob*MP*MP;
+              //      IE1=min(IP/IB+1-1,30); I'm pretty sure this change will output a traceback of the neutron spectra in the COM frame, could be an option - JKS
+              //      IE1=min(IE/IB+1-1,30); Proposed correction - JKS
+              IE1=min(IE/IB+1,30);
+              JC1=min(JC/5+1,20);
+              NDIST[IE1][JC1][MODE]++;
+
+              if(MODE<=5) {
+                  NTOT[MODE]++;
+                  ECM[MODE]+=IP;
+                  DSPIN[MODE]+=JC-JF;
+                }
+            }
+        }
+
+      //      fprintf(f09,"\\par ");
+      NZN=0;
+
+      for(I=1; I<=_NCASC; I++)
+        if(IZQ[INUC]==a[I]->Z && INQ[INUC]==a[I]->N) NZN++;
+
+      //========================================
 
 
-  while(true) {
-      //while_true_it++;
-      if(!f5.bytesAvailable()){
+      for(K=1; K<=5; K++) {
+          if(NTOT[K]==0) continue;
+
+          if(IZQ[INUC]<=0) {
+              IFISS=1;
+              IZPR=-IZQ[INUC];
+            }
+          else    {
+              IFISS=0;
+              IZPR=IZQ[INUC];
+            }
+
+          AM=double(NTOT[K])/double(NZN);
+          EC=ECM[K]/NTOT[K]-0.5;
+          DSP=DSPIN[K]/NTOT[K];
+
+          fprintf(f09,"\\par\\b  Z=%3d N=%4d  Mode=\\fc3 %.4s\\fc0    Total=%d   Out of %d events.\\b0    Multiplicity=%.2f  Average ECM=%.2f MeV"
+                      " Average spin removed = %.1f",
+                  IZPR,INQ[INUC],NTITL[K],NTOT[K],NZN,AM,EC,DSP);
+          s << "<h3> Z = " << QString::number(IZPR) << " N = " << QString::number(INQ[INUC]) << "  Mode = <span style=\"color:red\">" << QString::fromUtf8(NTITL[K]) << "</span> Total = "
+            << QString::number(NTOT[K]) << "  Out of " << QString::number(NZN) << " events.  Multiplicity = " << QString::number(AM) <<
+               " Average ECM = " << QString::number(EC) << " MeV Average spin removed = " << QString::number(DSP) << "</h3>";
+          if(IFISS==1){
+              fprintf(f09,"\\par  *************  Fission follows  particle.   Emission cascades  *************");
+              s << "<p>  *************  Fission follows  particle. Emission cascades  *************</p>";
+            }
+          s.flush();
+          QQQQ(K, IB,s);
+          s.flush();
+        }
+      //========================================
+      hasNucleusToProcess = false;
+
+      for(I=1; I<=_NCASC; I++) {
+          bool knownNucleus = false;
+
+          for(J=1; J<=INUC; J++) {
+              if(IZQ[J]==a[I]->Z && INQ[J]==a[I]->N) {
+                  knownNucleus = true;
+                  break;
+                }
+            }
+
+          if(knownNucleus)
+            continue;
+
+          INUC++;
+          IZQ[INUC]=a[I]->Z;
+          INQ[INUC]=a[I]->N;
+          hasNucleusToProcess = true;
           break;
         }
-      for(int i=0;i<10;i++){
-          in >> IBUF2a[i];
-        }
-      for(int i=0;i<5;i++){
-          in >> BUF3a[i];
-        }
-      k++;
-      INDX = TWO_WORDS(IBUF2a[0],IBUF2a[1]);
-
-      MODE = IBUF2a[2];
-      JC   = IBUF2a[3];
-      JF   = IBUF2a[4];
-      MP   = IBUF2a[5];
-      IE   = IBUF2a[6];
-      IP   = IBUF2a[7];
-      IZC  = IBUF2a[8];
-      INC  = IBUF2a[9];
-
-      //    INDX = TWO_WORDS(IBUF2[0],IBUF2[1]);
-
-      //    MODE = IBUF2[2];
-      //    JC   = IBUF2[3];
-      //    JF   = IBUF2[4];
-      //    MP   = IBUF2[5];
-      //    IE   = IBUF2[6];
-      //    IP   = IBUF2[7];
-      //    IZC  = IBUF2[8];
-      //    INC  = IBUF2[9];
-
-      Fprob    = BUF3a[0];
-      Ex_i     = BUF3a[1];
-      Ex_f     = BUF3a[2];
-      a_Elab   = BUF3a[3];
-      a_Angle  = BUF3a[4];
-
-      // size=read(f05,IBUF2,sizeof(short int)*10);    if(size<=0)break;
-      // size=read(f05,BUF3,sizeof(float)*5);          if(size<=0)break;
-
-      //    INDX = TWO_WORDS(IBUF2[0],IBUF2[1]);
-      //    MODE = IBUF2[2];
-      //    JC   = IBUF2[3];
-      //    JF   = IBUF2[4];
-      //    MP   = IBUF2[5];
-      //    IE   = IBUF2[6];
-      //    IP   = IBUF2[7];
-      //    IZC  = IBUF2[8];
-      //    INC  = IBUF2[9];
-
-      //    Fprob    = BUF3[0];
-      //    Ex_i     = BUF3[1];
-      //    Ex_f     = BUF3[2];
-      //    a_Elab   = BUF3[3];
-      //    a_Angle  = BUF3[4];
-
-      if (IZQ[INUC]!=a[INDX]->Z || INQ[INUC]!=a[INDX]->N) continue;
-
-      IP=(IP+9)/10;             //     CHANGE SCALE TO 1 MEV BINS
-      GFS+=Fprob;
-      SFE+=IE*Fprob;
-      TFE+=IE*IE*Fprob;
-      SFS+=JC*Fprob;
-      TFS+=JC*JC*Fprob;
-      SFM+=Fprob*MP;
-      TFM+=Fprob*MP*MP;
-      //      IE1=min(IP/IB+1-1,30); I'm pretty sure this change will output a traceback of the neutron spectra in the COM frame, could be an option - JKS
-      //      IE1=min(IE/IB+1-1,30); Proposed correction - JKS
-      IE1=min(IE/IB+1,30);
-      JC1=min(JC/5+1,20);
-      NDIST[IE1][JC1][MODE]++;
-
-      if (MODE<=5) {
-          NTOT[MODE]++;
-          ECM[MODE]+=IP;
-          DSPIN[MODE]+=JC-JF;
-        }
-    }
-
-  //      fprintf(f09,"\\par ");
-  NZN=0;
-
-  for(I=1; I<=_NCASC; I++)
-    if (IZQ[INUC]==a[I]->Z && INQ[INUC]==a[I]->N) NZN++;
-
-  //========================================
-
-
-  for(K=1; K<=5; K++) {
-      if (NTOT[K]==0) continue;
-
-      if (IZQ[INUC]<=0) {
-          IFISS=1;
-          IZPR=-IZQ[INUC];
-        }
-      else    {
-          IFISS=0;
-          IZPR=IZQ[INUC];
-        }
-
-      AM=double(NTOT[K])/double(NZN);
-      EC=ECM[K]/NTOT[K]-0.5;
-      DSP=DSPIN[K]/NTOT[K];
-
-      fprintf(f09,"\\par\\b  Z=%3d N=%4d  Mode=\\fc3 %.4s\\fc0    Total=%d   Out of %d events.\\b0    Multiplicity=%.2f  Average ECM=%.2f MeV"
-                  " Average spin removed = %.1f",
-              IZPR,INQ[INUC],NTITL[K],NTOT[K],NZN,AM,EC,DSP);
-      s << "<h3> Z = " << QString::number(IZPR) << " N = " << QString::number(INQ[INUC]) << "  Mode = <span style=\"color:red\">" << QString::fromUtf8(NTITL[K]) << "</span> Total = "
-        << QString::number(NTOT[K]) << "  Out of " << QString::number(NZN) << " events.  Multiplicity = " << QString::number(AM) <<
-           " Average ECM = " << QString::number(EC) << " MeV Average spin removed = " << QString::number(DSP) << "</h3>";
-      if (IFISS==1){
-          fprintf(f09,"\\par  *************  Fission follows  particle.   Emission cascades  *************");
-          s << "<p>  *************  Fission follows  particle. Emission cascades  *************</p>";
-        }
-      s.flush();
-      QQQQ(K, IB,s);
-      s.flush();
-    }
-  //========================================
-  for(I=1; I<=_NCASC; I++) {   //L170
-      for(J=1; J<=INUC; J++)
-        if (IZQ[J]==a[I]->Z && INQ[J]==a[I]->N ) goto L170;
-
-      INUC++;
-      IZQ[INUC]=a[I]->Z;
-      INQ[INUC]=a[I]->N;
-      goto L60;
-L170:
-      std::cout << "L170" << std::endl;
     }
 
 
@@ -450,88 +389,66 @@ L170:
           NDIST[I][J][K]=0;
     }
 
-
-  //_lseek(f05,0,SEEK_SET); // mpk lseek = _lseek for ISO C++ conformant
   f5.seek(SEEK_SET);
 
-L200:
-  //size=_read(f05,IBUF2,sizeof(short int)*10);      if(size <= 0)goto L210; // mpk read = _read for ISO C++ conformant
-  //size=_read(f05,BUF3,sizeof(float)*5);            if(size <= 0)goto L210; // mpk read = _read for ISO C++ conformant
-  if(f5.bytesAvailable()){
+  while(f5.bytesAvailable())
+    {
       for(int i=0;i<10;i++){
           in >> IBUF2a[i];
         }
       for(int i=0;i<5;i++){
           in >> BUF3a[i];
         }
-    } else {
-      goto L210;
+
+      INDX = TWO_WORDS(IBUF2a[0],IBUF2a[1]);
+
+      MODE = IBUF2a[2];
+      JC   = IBUF2a[3];
+      JF   = IBUF2a[4];
+      MP   = IBUF2a[5];
+      IE   = IBUF2a[6];
+      IP   = IBUF2a[7];
+      IZC  = IBUF2a[8];
+      INC  = IBUF2a[9];
+
+      Fprob    = BUF3a[0];
+      Ex_i     = BUF3a[1];
+      Ex_f     = BUF3a[2];
+      a_Elab   = BUF3a[3];
+      a_Angle  = BUF3a[4];
+
+      IE1=IE/IB+1;
+      IP=(IP+9)/10;
+      GFS+=Fprob;
+      SFE+=IE*Fprob;
+      TFE+=IE*IE*Fprob;
+      SFS+=JC*Fprob;
+      TFS+=JC*JC*Fprob;
+      SFM+=Fprob*MP;
+      TFM+=Fprob*MP*MP;
+      //      CHANGE SCALE TO 1 MEV BINS
+      IE1=min(IE1,30);
+      JC1=JC/5+1;
+
+      JC1=min(JC1,20);
+
+      //YJM[IE1][JC1]+=fabs(MP);
+      YJM[IE1][JC1]+=abs(MP);
+      if(a[INDX]->Z < 0)
+        NTFISS[IE1][JC1][MODE]++;
+
+      PF[IE1]+=Fprob;
+      NPF[IE1]++;
+
+      if(MODE>5 || a[INDX]->Z <0)
+        continue;
+
+      NDIST[IE1][JC1][MODE]++;
+      //     TRACEBACK NDIST IS RESIDUES ONLY
+      NTOT[MODE]++;
+      ECM[MODE]+=double(IP);
+      DSPIN[MODE]+=JC-JF;
     }
-  //INDX = TWO_WORDS(IBUF2[0],IBUF2[1]);
-  //MODE = IBUF2[2];
-  //JC   = IBUF2[3];
-  //JF   = IBUF2[4];
-  //MP   = IBUF2[5];
-  //IE   = IBUF2[6];
-  //IP   = IBUF2[7];
-  //IZC  = IBUF2[8];
-  //INC  = IBUF2[9];
-
-  //Fprob    = BUF3[0];
-  //Ex_i     = BUF3[1];
-  //Ex_f     = BUF3[2];
-  //a_Elab   = BUF3[3];
-  //a_Angle  = BUF3[4];
-  INDX = TWO_WORDS(IBUF2a[0],IBUF2a[1]);
-
-  MODE = IBUF2a[2];
-  JC   = IBUF2a[3];
-  JF   = IBUF2a[4];
-  MP   = IBUF2a[5];
-  IE   = IBUF2a[6];
-  IP   = IBUF2a[7];
-  IZC  = IBUF2a[8];
-  INC  = IBUF2a[9];
-
-
-
-  Fprob    = BUF3a[0];
-  Ex_i     = BUF3a[1];
-  Ex_f     = BUF3a[2];
-  a_Elab   = BUF3a[3];
-  a_Angle  = BUF3a[4];
-
-  IE1=IE/IB+1;
-  IP=(IP+9)/10;
-  GFS+=Fprob;
-  SFE+=IE*Fprob;
-  TFE+=IE*IE*Fprob;
-  SFS+=JC*Fprob;
-  TFS+=JC*JC*Fprob;
-  SFM+=Fprob*MP;
-  TFM+=Fprob*MP*MP;
-  //      CHANGE SCALE TO 1 MEV BINS
-  IE1=min(IE1,30);
-  JC1=JC/5+1;
-
-  JC1=min(JC1,20);
-
-  //YJM[IE1][JC1]+=fabs(MP);
-  YJM[IE1][JC1]+=abs(MP);
-  if ( a[INDX]->Z < 0)
-    NTFISS[IE1][JC1][MODE]++;
-
-  PF[IE1]+=Fprob;
-  NPF[IE1]++;
-  if (MODE>5  || a[INDX]->Z <0) goto L200;
-
-  NDIST[IE1][JC1][MODE]++;
-  //     TRACEBACK NDIST IS RESIDUES ONLY
-  NTOT[MODE]++;
-  ECM[MODE]+=double(IP);
-  DSPIN[MODE]+=JC-JF;
-  goto L200;
-L210: //fprintf(f09,"450 ");
   NZN=0;
 
   for(I=1; I<=_NCASC; I++)  if(a[I]->Z>=0)NZN++;
@@ -647,7 +564,8 @@ L210: //fprintf(f09,"450 ");
 
       if (NTT==0) continue;
       fprintf(f09,"\\par\\par\\b\\fs16   Mode = \\cf3 %s\\cf0    Total number = %d\\par\\b0\\fs14 ",NTITL[K],NTT);
-      s << "<p>&nbsp;</p><p> Mode = <span style=\"color:blue\">" << NTITL[K] << "  </span>Total number = " << QString::number(NTT) << "</p>";
+      s << "<p>&nbsp;</p><p> Mode = <span style=\"color:blue\">" << QString::fromUtf8(NTITL[K])
+           << "  </span>Total number = " << QString::number(NTT) << "</p>";
       if(K>=6) {
           SE=TE=SS=TS=0.;
 
@@ -729,7 +647,5 @@ void QQQQ(int K, int IB, QTextStream& s)
     }
   fprintf(f09,"\\cf0\\b0");
   s << "</tr></table>";
-
-
 }
 
