@@ -23,6 +23,8 @@
 #define HIGH_WORD(k) ((short int)(k >> 16))
 #define LOW_WORD(k)  ((short int)(k & 0xFFFF))
 
+extern bool PACESilentMode;
+
 ///   it is necessary to clear each time  CHECK before run PACE3 !!!!!!
 ///-------------------- static to clear
 int _cl_K,_cl_IPRNT,_cl_KK,_cl_IZPREV,_cl_INPREV;
@@ -368,11 +370,14 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
   int val=0;
 
   QProgressDialog progress("Calculating..","Cancel",0,countMax);
-  progress.setWindowFlags(Qt::CustomizeWindowHint |
-                          Qt::WindowCloseButtonHint);
-  progress.setWindowIcon(QIcon(":/pace4.png"));
-  progress.setWindowModality(Qt::WindowModal);
-  progress.show();
+  if(!PACESilentMode)
+    {
+      progress.setWindowFlags(Qt::CustomizeWindowHint |
+                              Qt::WindowCloseButtonHint);
+      progress.setWindowIcon(QIcon(":/pace4.png"));
+      progress.setWindowModality(Qt::WindowModal);
+      progress.show();
+    }
 
   if( COMPOS(_IZ,_IN,_ENERGY,_VZC,_MAXC,_SIGMA,ECLOSS,_INPUT,*htmlStream)<0)
     {
@@ -704,21 +709,26 @@ L100:
       if(progress_inc == 0)
         {
           countMax = c.Ex;
-          progress.setMaximum(countMax);
+          if(!PACESilentMode)
+            progress.setMaximum(countMax);
           progress_inc++;
-          progress.setLabelText(QString::number(Emin_wait));
+          if(!PACESilentMode)
+            progress.setLabelText(QString::number(Emin_wait));
         }
-      if(progress.wasCanceled()){
+      if(!PACESilentMode && progress.wasCanceled()){
           return 10;
         }
       if(countMax-c.Ex > val)
         {
           val = countMax-c.Ex;
-          progress.setValue(val);
-          progress.setLabelText("<h3 style=\"color:#e80a20;\"> &#x420; &#x430; &#x0441; &#x0447; &#x0451; &#x0442; ... </h3>"
-                                "<h3 style=\"color:#0f67e0;\">Calcul ...</h3><h3 style=\"color:#d0b534;\">"
-                                "Calculando ...</h3><h3> current Excitation Energy = " + QString::number(c.Ex) + " MeV</h3>");
-          qApp->processEvents();
+          if(!PACESilentMode)
+            {
+              progress.setValue(val);
+              progress.setLabelText("<h3 style=\"color:#e80a20;\"> &#x420; &#x430; &#x0441; &#x0447; &#x0451; &#x442; ... </h3>"
+                                    "<h3 style=\"color:#0f67e0;\">Calcul ...</h3><h3 style=\"color:#d0b534;\">"
+                                    "Calculando ...</h3><h3> current Excitation Energy = " + QString::number(c.Ex) + " MeV</h3>");
+              qApp->processEvents();
+            }
         }
       // //FormWait->InputEx(Emin_wait);
     }

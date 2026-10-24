@@ -14,6 +14,7 @@ extern double _EEXCN, _EREC, _AJNUC,_EEXCN_MAX;
 extern QString ElementName(int IZ);
 extern int _BatchMode;
 extern int _BatchNsteps;
+extern bool PACESilentMode;
 
 extern double MASSES(int IZ, int IN, int &opt);
 
@@ -192,8 +193,12 @@ void tfusion_2a::getVariables()
     }
 
     if(_IZC >130 || _IZC <=0) {
-        QMessageBox errorMessage;
-        errorMessage.critical(0,"Error","Compound Element number is wrong.");//,MB_OK | MB_ICONERROR);
+        if(PACESilentMode)
+            qWarning() << "PACE4:" << "Compound Element number is wrong.";
+        else {
+            QMessageBox errorMessage;
+            errorMessage.critical(0,"Error","Compound Element number is wrong.");//,MB_OK | MB_ICONERROR);
+        }
          //  return false;
     }
     _EEXCN = beamE_edit->text().toDouble();

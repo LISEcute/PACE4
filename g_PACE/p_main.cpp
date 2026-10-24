@@ -19,6 +19,7 @@ extern const char *LISEini;
 QString FileArg="";
 int fontsizeGlobal=9;
 int useHighDpiScaling=1;
+bool PACESilentMode=false;
 
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 
@@ -33,6 +34,20 @@ int main(int argc, char *argv[])
 //                                                   Qt::AA_DisableHighDpiScaling);
 //--------------------------------------------------------------------------------------
     QApplication app(argc, argv);
+
+    for(int i=1; i<argc; ++i)
+      {
+        const QString arg = QDir::fromNativeSeparators(QString::fromLocal8Bit(argv[i])).trimmed();
+        if(arg.compare(QStringLiteral("-s"), Qt::CaseInsensitive) == 0 ||
+           arg.compare(QStringLiteral("/s"), Qt::CaseInsensitive) == 0)
+          {
+            PACESilentMode = true;
+          }
+        else if(FileArg.isEmpty())
+          {
+            FileArg = arg;
+          }
+      }
     LISErootPATH = QCoreApplication::applicationDirPath();
     if(LISErootPATH.size()<=0)
         {
@@ -40,8 +55,6 @@ int main(int argc, char *argv[])
         QDir dir(arg0);
         LISErootPATH = dir.currentPath();
         }
-
-    if(argc>1) FileArg = QDir::fromNativeSeparators(argv[1]);
 
     //---------------------------------------------------------------------------------- paths + read font size start
     getInitialDir();
@@ -52,7 +65,7 @@ int main(int argc, char *argv[])
     app.setFont(QFont("Arial", fontsizeGlobal, QFont::Normal));
     app.setOrganizationName("FRIB/MSU");
     app.setStyle(QStyleFactory::create("Fusion"));
-    QFile FileStyle(":/w_Main/mainstyle.qss");
+    QFile FileStyle(":/styles/mainstyle.qss");
     FileStyle.open(QFile::ReadOnly);
     QString StyleSheet = QLatin1String(FileStyle.readAll());
     qApp->setStyleSheet(StyleSheet);
@@ -96,9 +109,19 @@ int main(int argc, char *argv[])
 
      //------------------------------------------------------------------ style end
 
+    if(PACESilentMode && FileArg.isEmpty())
+      {
+        qWarning() << "PACE4 silent mode requires an input .pace file.";
+        return 2;
+      }
+
     tfusion widget;
     widget.setMinimumWidth(750);
     widget.setMinimumHeight(754);
+
+    if(PACESilentMode)
+      return widget.runSilent() ? 0 : 1;
+
     widget.show();
 
     return app.exec();

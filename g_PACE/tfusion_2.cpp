@@ -7,6 +7,7 @@
 
 double _QcLoc2;
 
+extern bool PACESilentMode;
 extern double _ELAB,_EXPSIGr,_AGRAZr,_ELOSS,_ELAB_MAX;
 extern int _LMINN, _JCMAXr, _NOSHL;
 
@@ -446,24 +447,40 @@ void tfusion_2::getVariables()
     QString v = qcn_edit->text();
     _QCNr = v.toDouble();
     if(_IAP - _IZP < 0 ) {
-        QMessageBox errorMessage;
-        errorMessage.critical(0, "Error","Projectile Element number is wrong.");//,MB_OK | MB_ICONERROR);
+        if(PACESilentMode)
+            qWarning() << "PACE4:" << "Projectile Element number is wrong.";
+        else {
+            QMessageBox errorMessage;
+            errorMessage.critical(0, "Error","Projectile Element number is wrong.");//,MB_OK | MB_ICONERROR);
+        }
            //return false;
         }
     if(_IAT - _IZT < 0) {
-        QMessageBox errorMessage;
-        errorMessage.critical(0,"Error","Target Element number is wrong.");//,MB_OK | MB_ICONERROR);
+        if(PACESilentMode)
+            qWarning() << "PACE4:" << "Target Element number is wrong.";
+        else {
+            QMessageBox errorMessage;
+            errorMessage.critical(0,"Error","Target Element number is wrong.");//,MB_OK | MB_ICONERROR);
+        }
         // return false;
         }
     if(_IZC >130 || _IZC <=0) {
-        QMessageBox errorMessage;
-        errorMessage.critical(0,"Error","Compound Element number is wrong.");//,MB_OK | MB_ICONERROR);
+        if(PACESilentMode)
+            qWarning() << "PACE4:" << "Compound Element number is wrong.";
+        else {
+            QMessageBox errorMessage;
+            errorMessage.critical(0,"Error","Compound Element number is wrong.");//,MB_OK | MB_ICONERROR);
+        }
         //  return false;
         }
 
     if(_EEXCN <= 0) {
-        QMessageBox errorMessage;
-        errorMessage.critical(0,"Error", "Excitation energy is negative.");//,MB_OK | MB_ICONERROR);
+        if(PACESilentMode)
+            qWarning() << "PACE4:" << "Excitation energy is negative.";
+        else {
+            QMessageBox errorMessage;
+            errorMessage.critical(0,"Error", "Excitation energy is negative.");//,MB_OK | MB_ICONERROR);
+        }
         //  return false;
         }
 
@@ -473,8 +490,12 @@ void tfusion_2::getVariables()
         _BatchNsteps = n_steps->text().toDouble();
         if(_BatchNsteps < 2 || _BatchNsteps > 1000 || _ELAB_MAX <= _ELAB)
         {
-            QMessageBox errorMessage;
-            errorMessage.critical(0,"Error","Batch mode settings are wrong!");
+            if(PACESilentMode)
+                qWarning() << "PACE4:" << "Batch mode settings are wrong!";
+            else {
+                QMessageBox errorMessage;
+                errorMessage.critical(0,"Error","Batch mode settings are wrong!");
+            }
             //return false;
         }
     }

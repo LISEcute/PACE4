@@ -51,6 +51,7 @@ public:
     results *res_page;
     PACE *p;
 
+    bool runSilent();
 
 protected:
     void keyPressEvent(QKeyEvent *e);
@@ -85,12 +86,12 @@ private:
 
     void setFileName(const QString& FileName);
     void RunPACE3();
-    void RunPACE3local();
+    int RunPACE3local();
     void format_error();
     void setVariables();
 
     bool init_base();
-    void readFile(const QString& file);
+    bool readFile(const QString& file);
 
 private slots:
 
@@ -114,6 +115,8 @@ private slots:
 
 private:
     Ui::tfusion *ui;
+    bool m_lastReadOk = true;
+    int m_lastPaceResult = 0;
 };
 
 #endif // TFUSION_H

@@ -11,14 +11,14 @@ OBJECTS_DIR = obj
 
 
 win32-g++ {
-DESTDIR = c:/PACE4/_install
+DESTDIR = $$PWD/_install
 }
 win32-msvc {
-DESTDIR = c:/PACE4/_install_MSVC
+DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 4.35.4.1 # major.minor.patch.build
-else:VERSION = 4.35.4    # major.minor.patch
+win32:VERSION = 4.36.0.0 # major.minor.patch.build
+else:VERSION = 4.36.0    # major.minor.patch
 
 win32 {
        QMAKE_TARGET_COPYRIGHT = "LISE group at FRIB/MSU"
@@ -95,5 +95,5 @@ RESOURCES += \
 RC_ICONS += g_PACE/icons/pace4.ico
 
 #DEFINES += __APPLE_
-#ICON = ./Icons_macos/pace4.icns
-#QMAKE_INFO_PLIST = ./Info.plist
+#ICON = ../Icons_macos/pace4.icns
+#QMAKE_INFO_PLIST = ../Info.plist

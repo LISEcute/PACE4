@@ -43,6 +43,7 @@ extern QString basePATH2;
 extern QString LISErootPATH;
 
 extern QSqlDatabase db;
+extern bool PACESilentMode;
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 bool tfusion::init_base()
 {
@@ -61,7 +62,12 @@ bool tfusion::init_base()
   db.open();
 
   if(db.isOpenError())
-    QMessageBox::warning(this, "Database file Didn't open",AMEDbPath+" Can't be located");
+    {
+      if(PACESilentMode)
+        qWarning() << "PACE4: database file did not open:" << AMEDbPath;
+      else
+        QMessageBox::warning(this, "Database file Didn't open",AMEDbPath+" Can't be located");
+    }
 
   return db.isOpen();
 }

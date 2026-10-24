@@ -56,6 +56,7 @@ extern QString LISErootPATH;
 extern QString localPATH;
 extern const char *FileNameAbsent;
 extern QString FileArg;
+extern bool PACESilentMode;
 extern FILE *mfopen(const QString& filename, const char* operand);
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 extern bool init_base(QString name);
@@ -366,7 +367,7 @@ tfusion::tfusion(QWidget *parent):
 
   FFileName  = FileArg.size()>0? FileArg : localPATH + FileNameAbsent;
   setFileName(FFileName);
-  if(FileArg.size()>0) readFile(FFileName);
+  if(FileArg.size()>0) m_lastReadOk = readFile(FFileName);
 
   QSize size = this->minimumSizeHint();
   this->resize(size);
@@ -478,12 +479,13 @@ void tfusion::RunPACE3()
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 
-void tfusion::RunPACE3local()
+int tfusion::RunPACE3local()
 {
 
   int res = p->PACE3(FFileNameOut.toStdString().c_str(),FFileNameEve.toStdString().c_str(),
                      FFileNameCS.toStdString().c_str(), FFileNameParticles.toStdString().c_str(),
                      FFileNameHtml.toStdString().c_str());
+  m_lastPaceResult = res;
 
   if(p->ParticleFlags.IsParticleStateSet(ep_opened))
     {
@@ -492,6 +494,9 @@ void tfusion::RunPACE3local()
     }
   if(p->ParticleFlags.IsParticleStateSet(ep_permit))
     {
+      if(PACESilentMode)
+        return res;
+
       part_page = new particles(FFileNameParticles);
       part_page->setWindowFlags(Qt::CustomizeWindowHint |
                                 Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
@@ -501,9 +506,14 @@ void tfusion::RunPACE3local()
 
   // res_page->exec();
   if(res != 10){
+      if(PACESilentMode)
+        return res;
+
       res_page = new results(FFileNameHtml);
       res_page->show();
     }
+
+  return res;
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void tfusion::on_actionExecute_triggered()
@@ -673,18 +683,23 @@ void tfusion::on_actionOpen_triggered()
   readFile(file);
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-void tfusion::readFile(const QString& file)
+bool tfusion::readFile(const QString& file)
 {
   QFile f(file);
 
   if(!f.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-      QMessageBox MB;
-      MB.setWindowTitle("Warning!");
-      MB.setText(tr("Could not open file.\n%1").arg(file));
-      MB.setIcon(QMessageBox::Warning);
-      MB.exec();
-      return;
+      if(PACESilentMode)
+        qWarning() << "PACE4: could not open input file" << file;
+      else
+        {
+          QMessageBox MB;
+          MB.setWindowTitle("Warning!");
+          MB.setText(tr("Could not open file.\n%1").arg(file));
+          MB.setIcon(QMessageBox::Warning);
+          MB.exec();
+        }
+      return false;
     }
 
   QTextStream in(&f);
@@ -692,7 +707,7 @@ void tfusion::readFile(const QString& file)
   QString line;
   line=in.readLine();
   QStringList fields = line.split(' ',Qt::SkipEmptyParts);
-  if(fields.size() != 10 && fields.size() != 11) {format_error();}
+  if(fields.size() != 10 && fields.size() != 11) {format_error(); return false;}
   else {
       _NCASC = fields[0].toInt();
       _IDIST = fields[1].toInt();
@@ -717,7 +732,7 @@ void tfusion::readFile(const QString& file)
   if(_INPUT == 1){
       if(fields.size() != 7 && fields.size() != 8) {
           format_error();
-          return;
+          return false;
         }
 
       _IZP = fields[0].toInt();
@@ -730,7 +745,7 @@ void tfusion::readFile(const QString& file)
 
       line=in.readLine();
       fields = line.split(' ',Qt::SkipEmptyParts);
-      if(fields.size() != 6 && fields.size() != 8) {format_error(); }
+      if(fields.size() != 6 && fields.size() != 8) {format_error(); return false; }
       else {
           _ELAB = fields[0].toDouble();
           _EXPSIGr = fields[1].toDouble();
@@ -746,7 +761,7 @@ void tfusion::readFile(const QString& file)
     }else {
       if(fields.size() != 6) {
           format_error();
-          return;
+          return false;
         }
       _IZC = fields[0].toInt();
       _IAC = fields[1].toInt();
@@ -770,7 +785,7 @@ void tfusion::readFile(const QString& file)
       fields = line.split(' ',Qt::SkipEmptyParts);
       if(fields.size() != 15 && fields.size() != 0) {
           format_error();
-          return;
+          return false;
         } else if(fields.size() == 0) {
           p->_ITAKE[4] = 0;
         } else {
@@ -799,7 +814,7 @@ void tfusion::readFile(const QString& file)
       fields = line.split(' ',Qt::SkipEmptyParts);
       if(fields.size() != 15 && fields.size() != 0) {
           format_error();
-          return;
+          return false;
         } else if(fields.size() == 0) {
           p->_ITAKE[I] = 0;
         }else {
@@ -832,6 +847,7 @@ void tfusion::readFile(const QString& file)
 
   setFileName(file);
   f.close();
+  return true;
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void tfusion::q_clicked()
@@ -841,12 +857,43 @@ void tfusion::q_clicked()
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void tfusion::format_error()
 {
+  if(PACESilentMode)
+    {
+      qWarning() << "PACE4: input file is not in correct format.";
+      return;
+    }
+
   QMessageBox MB1;
   MB1.setWindowTitle("Error!");
   MB1.setText("File not in correct format.");
   MB1.setIcon(QMessageBox::Warning);
   MB1.exec();
   return;
+}
+
+//WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+bool tfusion::runSilent()
+{
+  if(FileArg.isEmpty())
+    {
+      qWarning() << "PACE4: no input file was specified for silent mode.";
+      return false;
+    }
+
+  if(!m_lastReadOk)
+    return false;
+
+  getVariables();
+
+  if(_INPUT == 1) page_2->getVariables();
+  else            page_2a->getVariables();
+
+  for(int i=0; i<4; ++i)
+    page3->readPage(i+1, p);
+
+  RunPACE3();
+
+  return m_lastPaceResult == 1;
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void tfusion::setVariables()
