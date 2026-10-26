@@ -17,8 +17,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 4.36.0.0 # major.minor.patch.build
-else:VERSION = 4.36.0    # major.minor.patch
+win32:VERSION = 4.37.0.0 # major.minor.patch.build
+else:VERSION = 4.37.0    # major.minor.patch
 
 win32 {
        QMAKE_TARGET_COPYRIGHT = "LISE group at FRIB/MSU"
@@ -65,7 +65,8 @@ SOURCES += \
 HEADERS  += \
     g_PACE/pace.h \
     g_PACE/tfusion.h \
-    g_PACE/ftype.h \
+    g_PACE/pace_version.h \
+    g_PACE/pace_random.h \
     g_PACE/Constant.h \
     g_PACE/ParticleStates.h \
     g_PACE/WinLise_Constant.h \

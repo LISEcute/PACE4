@@ -1,7 +1,7 @@
 #include <QDebug>
 #include "WinLise_Constant.h"
 #include "ParticleStates.h"
-#include "ftype.h"
+#include "pace_version.h"
 #include <math.h>
 #include <stdio.h>
 #include "pace.h"

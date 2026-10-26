@@ -4,13 +4,14 @@
 #include <time.h>
 #include <stdio.h>
 #include <math.h>
+#include <cmath>
 #include <stdlib.h>
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
 //#define dr13 (1./3.)
 //#define pow_dr13(A)    pow(A,dr13)
 //#define pow_mdr13(A)   pow(A,-dr13)
-#include "ftype.h"
+#include "pace_version.h"
 #include "pace.h"
 
 double RANF();
@@ -730,7 +731,11 @@ L1401:
   VZCC=VZC*30.;
   SC=((IA)%(2))*0.5;
   AMAXC=AJNUC -SC+1.1;
-  MAXC=AMAXC;
+  if(!std::isfinite(AMAXC) || AMAXC < 1. || AMAXC >= Max_MOM+1.) {
+      s << "<p>Compound spin exceeds the supported spin table.</p>";
+      return -5;
+  }
+  MAXC=static_cast<int>(AMAXC);
 
   //O//LEG      if(INPUT==3)fscanf (10,1403)MAXC,(SIGJC[I],I=1,MAXC);
   if(INPUT==4)COMPND(IZ,IN,EEXCN,MAXC, s);

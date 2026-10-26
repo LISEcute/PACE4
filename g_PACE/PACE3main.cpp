@@ -2,6 +2,8 @@
 //#include <time.h>
 #include "fisrot.h"
 #include <iostream>
+#include <vector>
+#include <QScopeGuard>
 #include <QDebug>
 #include <QApplication>
 #include <QProgressDialog>
@@ -10,7 +12,7 @@
 #include <string.h>
 #include <math.h>
 #include "tfusion.h"
-#include "ftype.h"
+#include "pace_version.h"
 #include <QTextStream>
 #include <QDate>
 #include <QTime>
@@ -24,6 +26,7 @@
 #define LOW_WORD(k)  ((short int)(k & 0xFFFF))
 
 extern bool PACESilentMode;
+#include "pace_random.h"
 
 ///   it is necessary to clear each time  CHECK before run PACE3 !!!!!!
 ///-------------------- static to clear
@@ -187,6 +190,7 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
   float BUF3[5];
 
 
+  bool outputWriteFailed = false;
   auto writeCurrentTracebackRecord = [&]() -> bool
   {
       TracebackRecord rec;
@@ -199,6 +203,7 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
 
       if(!writeTracebackRecord(f02, rec))
       {
+          outputWriteFailed = true;
           qDebug() << "PACE4: failed to write traceback record to" << filename_evt;
           return false;
       }
@@ -237,10 +242,15 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
   double SpinBarFac;
 
 
-  if(_NCASC>Max_NCASC) _NCASC=Max_NCASC;
-
-  a = new fusion_event*[_NCASC+1];
-  for(I=0; I<=_NCASC; I++) a[I]=new fusion_event;
+  if(_NCASC < 1 || _NCASC > Max_NCASC || _LMINN < 0 || _LMINN >= Max_MOM) {
+      qWarning() << "PACE4: invalid cascade count or minimum partial wave.";
+      return -1;
+  }
+  if(!InitRandom()) return -1;
+  std::vector<fusion_event> events(_NCASC+1);
+  std::vector<fusion_event*> eventPointers(_NCASC+1);
+  for(I=0; I<=_NCASC; I++) eventPointers[I] = &events[I];
+  a = eventPointers.data();
 
   _QCN=_QCNr;
   _FGE1 = _FGE1r;
@@ -255,42 +265,57 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
 
   _cl_K=_cl_IPRNT=_cl_KK =_cl_IZPREV=_cl_INPREV=0;
 
-  f09=fopen (filename_rtf,"wt");
-
-  f02=f_particles=nullptr;
-
-  QString html_filename(filename_html);
-  QFile *htmlFile = new QFile(html_filename);
-  if (!htmlFile->open(QIODevice::WriteOnly)){
-      qDebug() << "COULD NOT OPEN HTML FILE!"  << html_filename;
-      return -1;
-    }
-
-  htmlStream = new QTextStream(htmlFile);//,QIODevice::ReadWrite);
-
-
-  auto finishPace3 = [&]() -> int
-  {
-      fprintf(f09,"}");
-      fclose(f09);
-      htmlFile->close();
-
-      for(I=0; I<=_NCASC; I++) delete a[I];
-      delete a;
-
-      return 1;
+  f09=f02=f_particles=nullptr;
+  QString html_filename = QString::fromUtf8(filename_html);
+  QFile htmlFileStorage(html_filename);
+  QFile* htmlFile = &htmlFileStorage;
+  QTextStream htmlStreamStorage(htmlFile);
+  htmlStream = &htmlStreamStorage;
+  auto closeOutput = [&](FILE*& file) {
+      if(file) {
+          if(ferror(file)) outputWriteFailed = true;
+          if(fclose(file) != 0) outputWriteFailed = true;
+          file = nullptr;
+      }
   };
-
-  if(_IDIST!=0)
-    {
+  const auto outputCleanup = qScopeGuard([&]() {
+      htmlStreamStorage.flush();
+      closeOutput(f09);
+      closeOutput(f02);
+      closeOutput(f_particles);
+      ParticleFlags.ClearParticleState(ep_opened);
+      htmlStream = nullptr;
+  });
+  auto finishPace3 = [&](int result = 1) -> int {
+      if(f09) fprintf(f09,"}");
+      htmlStreamStorage.flush();
+      if(htmlStreamStorage.status() != QTextStream::Ok ||
+         (htmlFile->isOpen() && !htmlFile->flush())) outputWriteFailed = true;
+      closeOutput(f09);
+      closeOutput(f02);
+      closeOutput(f_particles);
+      return result == 1 && outputWriteFailed ? -1 : result;
+  };
+  f09=fopen(filename_rtf,"wt");
+  if(!f09 || !htmlFile->open(QIODevice::WriteOnly)) {
+      qWarning() << "PACE4: could not open report output files.";
+      return -1;
+  }
+  if(_IDIST!=0) {
       f02=fopen(filename_evt,"wb");
-    }
-
-  if(ParticleFlags.CanBeOpenedParticleFile())
-    {
-      f_particles = fopen (filename_particles,"wt");
+      if(!f02) {
+          qWarning() << "PACE4: could not open event output file.";
+          return -1;
+      }
+  }
+  if(ParticleFlags.CanBeOpenedParticleFile()) {
+      f_particles=fopen(filename_particles,"wt");
+      if(!f_particles) {
+          qWarning() << "PACE4: could not open particle output file.";
+          return -1;
+      }
       ParticleFlags.SetParticleState(ep_opened);
-    }
+  }
 
   _BARMAX=30.;
 
@@ -325,6 +350,8 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
   *htmlStream << "<!DOCTYPE html><html><head><title>PACE4 Results</title><style>td{padding:2px;} h3#mode{color:blue; margin-left:650px; }</style></head><body>";
   *htmlStream << "<p>" + html_filename + "<BR>" + QString(filename_rtf) + "</p>";
   *htmlStream << "<p>" + qbuf + "</p>";
+  *htmlStream << "<p>Random seed: " << CurrentRandomSeed() << "</p>";
+  fprintf(f09,"\\par Random seed: %u\\par ",CurrentRandomSeed());
 
   fprintf(f09,"%s \\par\\cf0\\fs16 ",qbuf.toStdString().c_str());
 
@@ -379,17 +406,8 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
       progress.show();
     }
 
-  if( COMPOS(_IZ,_IN,_ENERGY,_VZC,_MAXC,_SIGMA,ECLOSS,_INPUT,*htmlStream)<0)
-    {
-      if(_IDIST!=0 && f02)  {fclose(f02); f02=nullptr;}
-      if(f_particles)
-        {
-          fclose(f_particles);
-          f_particles=nullptr;
-          //ParticleFlags.ClearParticleState(ep_opened);
-        }
-      return finishPace3();
-    }
+  const int compositionResult = COMPOS(_IZ,_IN,_ENERGY,_VZC,_MAXC,_SIGMA,ECLOSS,_INPUT,*htmlStream);
+  if(compositionResult < 0) return finishPace3(compositionResult);
 
   //      IADEF=2 IS ASSUMED SPHERICAL NUCLEI FOR LEVEL DENSITIES.
   //      IADEF=1 IS CONSIDERED A DEFORMED NUCLEUS.
@@ -634,7 +652,7 @@ do {
       //     RUNNING SUM FOR J RANDOM SELECTION FORMED
       for(L=1; L<=_NCASC; L++) {        //      L  IS NO. OF CASCADE BEING CALCULATED
 
-          for(I=1; I<_MAXC; I++)  if(RANF()<=_ALEV[I]) break;
+          I = SampleInitialSpin(_ALEV, _MAXC);
           a[L]->init(_IZ,_IN,_ENERGY-ECLOSS*RANF(),I,(I-1)*_MDIR);
         }
     }
@@ -716,7 +734,7 @@ L100:
             progress.setLabelText(QString::number(Emin_wait));
         }
       if(!PACESilentMode && progress.wasCanceled()){
-          return 10;
+          return finishPace3(10);
         }
       if(countMax-c.Ex > val)
         {
@@ -1177,13 +1195,12 @@ L201:
   *htmlStream << "<p>&nbsp;</p><p>     ---- end of evaporation calculation ---- </p>";
 
   if(_IDIST!=0 && f02)  {
-      fclose(f02); f02=nullptr;
+      closeOutput(f02);
       STATIS(a, filename_evt, ParticleFlags, *htmlStream);
     }
 
   if(f_particles)  {
-      fclose(f_particles);
-      f_particles=nullptr;
+      closeOutput(f_particles);
       ParticleFlags.ClearParticleState(ep_opened);
     }
   *htmlStream << "</body></html>";

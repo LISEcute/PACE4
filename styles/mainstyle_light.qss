@@ -1,0 +1,39 @@
+QGroupBox {
+    color: #005045;
+    border: 1px solid #006020;
+    border-radius: 5px;
+    margin-top: 0.5em;
+    background-color: rgba(224,224,224,0.5);
+}
+
+QGroupBox::disabled {
+    color: #8A8AAE;
+    border: 1px solid #8A8AAE;
+    background-color: rgba(224,224,224,0.5);
+}
+
+QPushButton {
+    text-align: center;
+    margin-left: 3px;
+    margin-right: 1px;
+    padding-left: 5px;
+    padding-right: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    min-height: 22px;
+}
+
+QLineEdit {
+    background-color: rgb(250,250,245);
+}
+
+QLineEdit:read-only {
+    background-color: rgb(230,230,225);
+}
+
+QMenuBar::item {
+    background: transparent;
+    padding: 4px 8px;
+    spacing: 2px;
+}
+

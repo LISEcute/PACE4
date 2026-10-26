@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include <QFormLayout>
 #include <QFileDialog>
 #include <QGridLayout>
@@ -15,7 +16,7 @@
 #include "p_about.h"
 #include "tfusion.h"
 #include "ui_tfusion.h"
-#include "ftype.h"
+#include "pace_version.h"
 #include "ParticleStates.h"
 
 
@@ -60,7 +61,7 @@ extern bool PACESilentMode;
 extern FILE *mfopen(const QString& filename, const char* operand);
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 extern bool init_base(QString name);
-extern void InitRandom();
+
 extern FILE *f10; //, *f09, *f02;
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 extern char *GetNextSymbol(char *s);
@@ -81,7 +82,6 @@ tfusion::tfusion(QWidget *parent):
                   Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowCloseButtonHint );
   p = new PACE();
 
-  InitRandom();
   init_base();
   FFileNameEve =  localPATH + "/PACE4evt.dat";
   //   qDebug() << FFileNameEve;
@@ -395,10 +395,10 @@ void tfusion::getVariables()
           _NCASC = val.toInt();
         }
       else if (i ==1) {            _INPUT = inp_combo->currentIndex()+1; }
-      else if (i == 2){            _FYRST = val.toFloat();}
-      else if (i == 3){            _BARFACr = val.toFloat();}
-      else if (i == 4){            _ARATIO = val.toFloat();}
-      else if (i == 5){            _FACLA = val.toFloat();}
+      else if (i == 2){            _FYRST = val.toDouble();}
+      else if (i == 3){            _BARFACr = val.toDouble();}
+      else if (i == 4){            _ARATIO = val.toDouble();}
+      else if (i == 5){            _FACLA = val.toDouble();}
     }
 
   for(int j=0;j<3;j++)
@@ -432,8 +432,33 @@ void tfusion::getVariables()
 
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+bool tfusion::validateInputs()
+{
+    QString error;
+    if(_NCASC < 1 || _NCASC > Max_NCASC)
+        error = "Number of cascades must be between 1 and " + QString::number(Max_NCASC) + ".";
+    else if(_INPUT < 1 || _INPUT > 5 || _IDIST < 0 || _IDIST > 2)
+        error = "Invalid calculation or output mode.";
+    else if(_LMINN < 0 || _LMINN >= Max_MOM)
+        error = "Minimum partial wave is outside the supported spin range.";
+    else if(_INPUT != 1 && (!std::isfinite(_AJNUC) || _AJNUC < (_IAC%2)*0.5 ||
+                           _AJNUC - (_IAC%2)*0.5 + 1.1 >= Max_MOM+1))
+        error = "Compound spin exceeds the supported spin table.";
+    else if(_BatchMode && (_BatchNsteps < 2 || _BatchNsteps > 1000 ||
+            !std::isfinite(_INPUT == 1 ? _ELAB_MAX : _EEXCN_MAX) ||
+            !std::isfinite(_INPUT == 1 ? _ELAB : _EEXCN) ||
+            (_INPUT == 1 ? _ELAB_MAX <= _ELAB : _EEXCN_MAX <= _EEXCN)))
+        error = "Batch mode requires 2 to 1000 steps and a finite maximum energy above the minimum.";
+    if(error.isEmpty()) return true;
+    m_lastPaceResult = -1;
+    if(PACESilentMode) qWarning().noquote() << "PACE4:" << error;
+    else QMessageBox::critical(this, "PACE4 input error", error);
+    return false;
+}
+
 void tfusion::RunPACE3()
 {
+  if(!validateInputs()) return;
 
   if(_BatchMode)
     {
@@ -444,7 +469,7 @@ void tfusion::RunPACE3()
       FileNameSave = FFileName;
 
       QString FN = FFileName;
-      QString FP = FN.split(".",Qt::SkipEmptyParts).at(0);
+      QString FP = QFileInfo(FN).path() + "/" + QFileInfo(FN).completeBaseName();
 
       QString Fext = "txt"; //QString::fromStdString(FFileName).split(".",Qt::SkipEmptyParts).at(1);
 
@@ -466,7 +491,7 @@ void tfusion::RunPACE3()
           else    _EEXCN=  _EEXCN_save + double(_CurrentBatchStep)*h_CN;
 
 
-          RunPACE3local();
+          if(RunPACE3local() != 1) break;
         }
 
       _ELAB = _ELAB_save;
@@ -725,6 +750,12 @@ bool tfusion::readFile(const QString& file)
         }
     }
 
+  // These values index fixed widget arrays in setVariables().
+  if(_INPUT < 1 || _INPUT > 5 || _IDIST < 0 || _IDIST > 2 ||
+     _MDIR < 0 || _MDIR > 1 || _ITRAC < 0 || _ITRAC > 1 ||
+     _NOSHL < 0 || _NOSHL > 1) {
+      format_error(); return false;
+  }
   setVariables();
   line=in.readLine();
   fields = line.split(' ',Qt::SkipEmptyParts);
@@ -756,6 +787,7 @@ bool tfusion::readFile(const QString& file)
           if(fields.size() == 8){
               _BarrierMode = fields[6].toInt();
               _h_omega = fields[7].toDouble();
+              if(_BarrierMode < 0 || _BarrierMode > 1) { format_error(); return false; }
             }
         }
     }else {
@@ -768,15 +800,29 @@ bool tfusion::readFile(const QString& file)
       _EEXCN = fields[2].toDouble();
       _EREC = fields[3].toDouble();
       _AJNUC = fields[4].toDouble();
-      _LMINN = fields[4].toInt();
+      _LMINN = fields[5].toInt();
     }
 
   if(_INPUT == 3){
       line=in.readLine();
       fields = line.split(' ',Qt::SkipEmptyParts);
-      for(int i=1;i<fields.size();i++){
-          _ALEVB[i] = fields[i].toDouble();
-        }
+      bool countOk = false;
+      const int count = fields.value(0).toInt(&countOk);
+      if(!countOk || count < 1 || count > Max_MOM || fields.size() != count + 1) {
+          format_error(); return false;
+      }
+      double weights[Max_MOM+1] = {};
+      double total = 0.;
+      for(int i=1; i<=count; ++i) {
+          bool ok = false;
+          weights[i] = fields[i].toDouble(&ok);
+          if(!ok || !std::isfinite(weights[i]) || weights[i] < 0.) {
+              format_error(); return false;
+          }
+          total += weights[i];
+      }
+      if(!std::isfinite(total) || total <= 0.) { format_error(); return false; }
+      for(int i=0; i<=Max_MOM; ++i) _ALEVB[i] = weights[i];
 
     }
 
@@ -901,16 +947,16 @@ void tfusion::setVariables()
   lineEdit[0]->setText(QString::number(_NCASC));
   //inp[_INPUT-1]->setChecked(true);
   inp_combo->setCurrentIndex(_INPUT-1);
-  lineEdit[1]->setText(QString::number(_FYRST));
-  lineEdit[2]->setText(QString::number(_BARFACr));
-  lineEdit[3]->setText(QString::number(_ARATIO));
-  lineEdit[4]->setText(QString::number(_FACLA));
+  lineEdit[1]->setText(QString::number(_FYRST, 'g', 17));
+  lineEdit[2]->setText(QString::number(_BARFACr, 'g', 17));
+  lineEdit[3]->setText(QString::number(_ARATIO, 'g', 17));
+  lineEdit[4]->setText(QString::number(_FACLA, 'g', 17));
   idist[_IDIST]->setChecked(true);
   mdir[_MDIR]->setChecked(true);
   itrac[_ITRAC]->setChecked(true);
   noshl[_NOSHL]->setChecked(true);
-  limits[0]->setText(QString::number(_LowLimit));
-  limits[1]->setText(QString::number(_HighLimit));
+  limits[0]->setText(QString::number(_LowLimit, 'g', 17));
+  limits[1]->setText(QString::number(_HighLimit, 'g', 17));
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void tfusion::keyPressEvent(QKeyEvent *e)
@@ -925,6 +971,9 @@ void tfusion::keyPressEvent(QKeyEvent *e)
 void tfusion::on_actionSave_triggered()
 {
   getVariables();
+  if(_INPUT == 1) page_2->getVariables();
+  else page_2a->getVariables();
+  if(!validateInputs()) return;
   QFile qf(FFileName);
   QFileInfo qfinfo(qf.fileName());
   if(qfinfo.fileName().contains(&FileNameAbsent[1]))
@@ -938,7 +987,7 @@ void tfusion::on_actionSave_triggered()
 
   Modified = false;
 
-  fprintf(f10,"%5d%5d%5d%5.0f%5.0f%5.0f%5d%5.0f%5d%5d%5d\n",
+  fprintf(f10,"%d %d %d %.17g %.17g %.17g %d %.17g %d %d %d\n",
           _NCASC,_IDIST,_INPUT,_FYRST, _BARFACr, _ARATIO, _MDIR, _FACLA, _ITRAC, _NOSHL, p->ParticleFlags.GetParticleFlags());
 
   // level2
@@ -951,32 +1000,32 @@ void tfusion::on_actionSave_triggered()
             1101 FORMAT(2F10.5,I5,2F5.0,I5)
            */
       page_2->getVariables();
-      fprintf(f10,"%5d%5d%5d%5d%5.1f%5.1f%10.5f\n",
+      fprintf(f10,"%d %d %d %d %.17g %.17g %.17g\n",
               _IZP, _IAP, _IZT, _IAT, _SPr, _ST, _QCNr);
 
-      fprintf(f10, "%10.5f%10.5f%5d%5.0f%5.0f%5d %1d %.2f\n",
+      fprintf(f10, "%.17g %.17g %d %.17g %.17g %d %d %.17g\n",
               _ELAB, _EXPSIGr, _JCMAXr, _AGRAZr, _ELOSS, _LMINN, _BarrierMode, _h_omega);
     }
   else {
       page_2a->getVariables();
       // READ(10,1402)IZ,IA,EEXCN,EREC,AJNUC ,LMINN
 
-      fprintf(f10,"%5d%5d%10.4f%10.4f%10.4f%5d\n",
+      fprintf(f10,"%d %d %.17g %.17g %.17g %d\n",
               _IZC, _IAC, _EEXCN, _EREC, _AJNUC, _LMINN);
     }
 
   //  WWWWWWWWWWWWWWWWWWWWWWWW-- level 2a INPUT=3
   if(_INPUT==3){
       // (I5,5X,7F10.5/(8F10.5));
-      fprintf(f10,"%5d     ",int(_AJNUC));
-
-      for(int i=1; i<=_AJNUC; i++)
-        fprintf(f10,"%10.5f",_ALEVB[i]);
+      const int spinBins = static_cast<int>(_AJNUC - (_IAC%2)*0.5 + 1.1);
+      fprintf(f10,"%d",spinBins);
+      for(int i=1; i<=spinBins; i++)
+        fprintf(f10," %.17g",_ALEVB[i]);
 
       fprintf(f10,"\n");
     }
   //  WWWWWWWWWWWWWWWWWWWWWWWW-- level 3   opt potentials
-  char optic_f[70]="%8.3f%8.3f%8.3f%8.3f%8.3f%8.3f%8.3f%8.3f%8.3f%8.3f%8.3f%8.3f%5d%3d%3d";
+  const char* optic_f="%.17g %.17g %.17g %.17g %.17g %.17g %.17g %.17g %.17g %.17g %.17g %.17g %d %d %d";
   int I;
 
   if(_INPUT==1){

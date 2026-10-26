@@ -2,6 +2,10 @@
 #include <QtMath>
 #include <QString>
 #include <time.h>
+#include <QRandomGenerator>
+#include <QDateTime>
+#include <QDebug>
+#include "pace_random.h"
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
 
@@ -115,18 +119,40 @@ const char* symb=
 static long idum =13L;
 static double gdAM=1.0/gdIM;
 
-void InitRandom();
-double MyRandom(void);
+static unsigned int randomSeed = 13;
 
 
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-void InitRandom(void)
+bool InitRandom()
 {
-    time_t now = time(0);
-    struct tm *timep = localtime(&now) ;
-    //gettime(&timep);
+    const QByteArray requested = qgetenv("PACE4_SEED");
+    if(!requested.isEmpty()) {
+        bool ok = false;
+        const qulonglong seed = requested.toULongLong(&ok, 10);
+        if(!ok || seed == 0 || seed >= gdIM) {
+            qWarning() << "PACE4_SEED must be an integer from 1 to 2147483646.";
+            return false;
+        }
+        randomSeed = static_cast<unsigned int>(seed);
+    } else {
+        const quint64 entropy = QRandomGenerator::system()->generate64() ^
+                                static_cast<quint64>(QDateTime::currentMSecsSinceEpoch());
+        randomSeed = static_cast<unsigned int>(entropy % (gdIM-1)) + 1;
+    }
+    idum = randomSeed;
+    // Both masked zero and the modulus would otherwise lock the stream at zero.
+    if((idum ^ gdMASK) == 0 || (idum ^ gdMASK) == gdIM) idum = 1 ^ gdMASK;
+    return true;
+}
 
-    idum =  timep->tm_year + (60*(60*timep->tm_hour + timep->tm_min)+timep->tm_sec);
+unsigned int CurrentRandomSeed() { return randomSeed; }
+
+int SampleInitialSpin(const double* cumulative, int count)
+{
+    const double draw = MyRandom();
+    int bin = 1;
+    while(bin < count && draw > cumulative[bin]) ++bin;
+    return bin;
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 double MyRandom(void)

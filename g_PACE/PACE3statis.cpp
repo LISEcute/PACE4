@@ -11,7 +11,7 @@
 #include <fcntl.h>
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
-#include "ftype.h"
+#include "pace_version.h"
 #include "ParticleStates.h"
 
 #define TWO_WORDS(Hw, Lw) ((int)(((unsigned int)(Lw&0xFFFF)) + (Hw<<16)))

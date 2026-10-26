@@ -159,6 +159,9 @@ void tfusion_2a::setVariablesa(int index)
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void tfusion_2a::setVariables(){
+    beamE_edit->setText(QString::number(_EEXCN, 'g', 17));
+    Elab_max->setText(QString::number(_EEXCN_MAX, 'g', 17));
+    n_steps->setText(QString::number(_BatchNsteps));
 
     field_labels[0] = QString::number(_IAC);
     field_labels[2] = QString::number(_IZC);
@@ -175,8 +178,8 @@ void tfusion_2a::setVariables(){
        // el[0] = elc[0];
        // el[1] = elc[1];
         labels[j]->setText("<b>" +elc+"</b>");//] = new QLabel("<b>" +QString::fromUtf8(el,2)+"</b>");
-        line[0]->setText(QString::number(_EREC));
-        line[1]->setText(QString::number(_AJNUC));
+        line[0]->setText(QString::number(_EREC, 'g', 17));
+        line[1]->setText(QString::number(_AJNUC, 'g', 17));
         line[2]->setText(QString::number(_LMINN));
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW

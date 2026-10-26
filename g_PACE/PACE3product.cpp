@@ -6,7 +6,7 @@
 #include <math.h>
 
 
-#include "ftype.h"
+#include "pace_version.h"
 #include "ParticleStates.h"
 
 #include <cmath>

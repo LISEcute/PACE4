@@ -1,6 +1,6 @@
 #include "p_about.h"
 #include "ui_p_about.h"
-#include "g_PACE/ftype.h"
+#include "g_PACE/pace_version.h"
 
 #include <QDesktopServices>
 #include <QUrl>

@@ -85,6 +85,7 @@ private:
     QLabel *Al;
 
     void setFileName(const QString& FileName);
+    bool validateInputs();
     void RunPACE3();
     int RunPACE3local();
     void format_error();

@@ -1,7 +1,7 @@
 #include <QTextStream>
 #include <QString>
 //#include "WinLise_Constant.h"
-#include "ftype.h"
+#include "pace_version.h"
 #include <math.h>
 #include <stdio.h>
 #define min(a, b)  (((a) < (b)) ? (a) : (b))

@@ -1,0 +1,185 @@
+QGroupBox {
+    color: #cccccc;
+    border-radius: 5px;
+    margin-top: 0.5em;
+    background-color: #3e3e3e;
+    border: 1px solid #999;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 3px 0 3px;
+    color: #dddddd;
+}
+
+QPushButton {
+    color: #dddddd;
+    background-color: #5a5a5a;  /* slightly lighter */
+    border: 1px solid #888888;
+    border-radius: 4px;
+    padding: 4px 8px;
+    min-height: 22px;
+}
+
+QPushButton:hover {
+    background-color: #6a6a6a;
+    border: 1px solid #aaaaaa;
+}
+
+QPushButton:pressed {
+    background-color: #484848;
+    border: 1px solid #aaaaaa;
+}
+
+QPushButton:disabled {
+    background-color: #3a3a3a;
+    color: #888888;
+    border: 1px solid #555555;
+}
+
+QLineEdit {
+    background-color: #2e2e2e;
+    color: #e0e0e0;
+    border: 1px solid #555555;
+}
+
+QLineEdit:read-only {
+    background-color: #2a2a2a;
+    color: #aaaaaa;
+}
+
+QDialog, QWidget {
+    color: #cccccc;          /* Softer white */
+    background-color: #2e2e2e;
+}
+
+QLabel, QGroupBox::title {
+    color: #cccccc;
+}
+
+QMenu {
+    background-color: #2e2e2e;
+    color: #eeeeee;
+    border: 1px solid #666666;
+}
+
+QMenu::item:selected {
+    background-color: #444444;
+    color: #ffffff;
+}
+
+QMenu::item:disabled {
+    color: #777777;
+}
+
+
+QLabel, QCheckBox, QRadioButton {
+    color: #dddddd;
+}
+
+QRadioButton::indicator {
+    border: 1px solid #aaaaaa;
+    background-color: #222222;
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+}
+
+QRadioButton::indicator:checked {
+    border: 1px solid #aaaaaa;
+    background: qradialgradient(
+        cx:0.5, cy:0.5, radius:0.58,
+        fx:0.5, fy:0.5,
+        stop:0 #ffffff,
+        stop:0.35 #ffffff,
+        stop:0.4 #4e5e4e,
+        stop:1 #4e5e4e
+    );
+}
+
+QCheckBox::indicator {
+    border: 1px solid #aaaaaa;
+    background-color: #222222;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/checkbox/Checkmark_White.svg);
+    background-color: #4e5e4e;
+    border: 1px solid #aaaaaa;
+}
+
+QToolButton {
+    background-color: #555555;
+    border: 1px solid #757575;
+    padding: 2px;
+    margin: 2px;
+    border-radius: 4px;
+}
+
+QToolButton:hover {
+    background-color: #656565;
+    border: 1px solid #888888;
+}
+
+QToolButton:pressed {
+    background-color: #767676;
+    border: 1px solid #aaaaaa;
+}
+
+QMenuBar {
+    background-color: #2e2e2e;
+    color: #dddddd;
+}
+
+/* Top-level menu items */
+QMenuBar::item {
+    background: transparent;
+    color: #eeeeee;
+    padding: 4px 12px;
+    spacing: 3px;
+}
+
+/* Hover/active item */
+QMenuBar::item:selected {
+    background: #444444;
+    color: #ffffff;
+}
+
+/* Pressed (clicked) item */
+QMenuBar::item:pressed {
+    background: #666666;
+    border: 1px solid #888888;
+}
+
+QToolBar {
+    background-color: #2d2d2d;  /* Dark base for the toolbar itself */
+    spacing: 1px;
+}
+
+QToolBar QToolButton {
+    background-color: #777777;       /* ← LIGHTER background behind the icon */
+    border:  1px solid #666666;
+    padding: 1px;
+    margin: 1px;
+    border-radius: 2px;
+    icon-size: 20px;           
+    min-width: 0px;            
+    min-height: 0px;
+}
+
+QToolBar QToolButton:hover {
+    background-color: #AAAAAA;      
+}
+
+QToolBar QToolButton:checked {
+    background-color: #CCCCCC;       /* Light when toggled */
+}
+
+QProgressBar {
+    color: black;
+}
+

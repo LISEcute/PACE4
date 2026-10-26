@@ -66,9 +66,11 @@ int main(int argc, char *argv[])
     app.setOrganizationName("FRIB/MSU");
     app.setStyle(QStyleFactory::create("Fusion"));
     QFile FileStyle(":/styles/mainstyle.qss");
-    FileStyle.open(QFile::ReadOnly);
-    QString StyleSheet = QLatin1String(FileStyle.readAll());
-    qApp->setStyleSheet(StyleSheet);
+    if(FileStyle.open(QFile::ReadOnly)) {
+        qApp->setStyleSheet(QString::fromUtf8(FileStyle.readAll()));
+    } else {
+        qWarning() << "PACE4: could not open bundled stylesheet:" << FileStyle.fileName();
+    }
 
     int fontsize = 9;
 

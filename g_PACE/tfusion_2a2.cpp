@@ -1,11 +1,11 @@
 #include "tfusion_2a2.h"
-#include "ftype.h"
+#include "pace_version.h"
 
 #include <QLabel>
 #include <QGridLayout>
 #include <QGroupBox>
 
-extern double _ALEVB[Max_MOM];
+extern double _ALEVB[Max_MOM+1];
 extern double _AJNUC;
 extern int _LMINN, _IAC;
 
@@ -65,6 +65,7 @@ tfusion_2a2::tfusion_2a2(QWidget *parent) :
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void tfusion_2a2::setPage()
 {
+    Current=max(1,min(Current, Max_MOM-3));
 
     double r=(_IAC%2)*0.5;
 
@@ -85,7 +86,7 @@ void tfusion_2a2::up_clicked()
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void tfusion_2a2::down_clicked()
 {
-    if(Current>=_AJNUC-2-(_IAC%2)) return;
+    if(Current>=Max_MOM-3 || Current>=_AJNUC-2-(_IAC%2)) return;
     Current++;
     setPage();
 }

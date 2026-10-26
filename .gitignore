@@ -5,3 +5,6 @@
 * /build/
 _install_MSVC/
 t/
+/_build_validation/
+/_build_msvc_style/
+test/

@@ -395,19 +395,22 @@ void tfusion_2::setVariables(bool setAll)
 
 if(setAll)
     {
-    qcn_edit->setText(QString::number(_QCNr, 'f', 2));
-    beamE_edit->setText(QString::number(_ELAB, 'f', 2));
+    h_edit->setText(QString::number(_h_omega, 'g', 17));
+    radio[_BarrierMode]->setChecked(true);
+    h_w->setVisible(_BarrierMode == 1);
+    qcn_edit->setText(QString::number(_QCNr, 'g', 17));
+    beamE_edit->setText(QString::number(_ELAB, 'g', 17));
 
     if(Elab_max->isVisible()){
-        Elab_max->setText(QString::number(_ELAB_MAX, 'f', 2));
+        Elab_max->setText(QString::number(_ELAB_MAX, 'g', 17));
         n_steps->setText(QString::number(_BatchNsteps));
         }
     }
 
-    edits[0]->setText(QString::number(_EXPSIGr));
+    edits[0]->setText(QString::number(_EXPSIGr, 'g', 17));
     edits[1]->setText(QString::number(_JCMAXr));
-    edits[2]->setText(QString::number(_AGRAZr));
-    edits[3]->setText(QString::number(_ELOSS));
+    edits[2]->setText(QString::number(_AGRAZr, 'g', 17));
+    edits[3]->setText(QString::number(_ELOSS, 'g', 17));
     edits[4]->setText(QString::number(_LMINN));
     _QcLoc2=MP+MT-MC;
 
@@ -418,7 +421,7 @@ if(setAll)
     _EEXCN=ECM+_QcLoc2;
     calc_edit[0]->setText(QString::number(_QcLoc2));
     calc_edit[1]->setText(QString::number(ECM));
-    calc_edit[2]->setText(QString::number(_EEXCN));
+    calc_edit[2]->setText(QString::number(_EEXCN, 'g', 17));
 
     FlagPermit=true;
 }

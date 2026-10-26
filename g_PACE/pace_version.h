@@ -1,5 +1,5 @@
-#define PACE_version "Version 4.36.0"
-#define PACE_date    "Last revision 26-JUL-2026"
+#define PACE_version "Version 4.37.0"
+#define PACE_date    "Last revision 26-OCT-2026"
 
 #define Max_NCASC 1000000
 #define Max_EBIN  4000
@@ -152,3 +152,41 @@
 // silent mode added:
 //  PACE4.exe input.pace -s or /s runs without dialogs, gauges, or output windows;
 //  writes input.html and input.rtf beside the input file
+
+//============================================================================
+// 4.36.1    10/26/26
+// Monte Carlo sampling and reproducibility
+// - Initial J selection consumes one random draw per cascade, outside the CDF
+//   search, matching g_PACE/fortran/PACE3.for; energy loss retains its own draw.
+// - Retain the legacy masked Park-Miller generator. Initialize each calculation
+//   from Qt system entropy and full-date milliseconds instead of year/time-of-day.
+// - Optional PACE4_SEED environment variable accepts integers 1..2147483646.
+//   Record this external seed in HTML and RTF reports for exact stream replay.
+//   The two seeds that unmask to 0 or the modulus map to nonzero state 1.
+// Input fidelity and validation
+// - Read compound LMINN from its sixth field rather than duplicating AJNUC.
+// - Save floating parameters with 17 significant digits and explicit separators;
+//   preserve editable widget precision during load/save/run round trips.
+// - Refresh loaded compound excitation energy and barrier settings in their
+//   widgets before execution; reject invalid mode flags before widget indexing.
+// - Validate imported spin weight counts, finite nonnegative weights and totals;
+//   clear missing legacy tail weights, and save the complete spin-index range.
+// - Reject out-of-range compound spin before accessing fixed tables in COMPOS;
+//   bound distribution editor paging, cascade counts and minimum partial waves.
+// - Reject invalid batch step counts/ranges before calculating step energies,
+//   stop a batch on failure or cancellation, and preserve dots in output paths.
+// Resource lifetime and status
+// - Own cascade objects/pointer views with vectors; eliminate mismatched delete.
+// - Scope HTML objects and all report/event/particle streams so cancellation and
+//   early failures release memory/handles. Check stream opens and final writes.
+// - Preserve composition failure codes through cleanup and silent-mode exit.
+// Maintenance and regression coverage
+// - Rename the version header to pace_version.h and update includes/Qt project.
+// - Add compiled generator/CDF tests, actual Qt load/save/reload integration
+//   tests, and executable silent-mode/error-path regression tests under tests/.
+
+//============================================================================
+// 4.37.0    10/26/26
+// - Expose the bundled stylesheet as :/styles/mainstyle.qss, matching startup.
+// - Read/apply the stylesheet only after QFile::open succeeds.
+// - Synchronize Qt project and Windows executable version to 4.37.0.
