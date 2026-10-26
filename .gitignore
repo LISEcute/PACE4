@@ -8,3 +8,4 @@ t/
 /_build_validation/
 /_build_msvc_style/
 test/
+tests/

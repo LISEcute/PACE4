@@ -45,6 +45,7 @@ def main():
     ap.add_argument('--exe', type=Path, required=True)
     ap.add_argument('--out', type=Path, required=True)
     ap.add_argument('--events', type=int, default=5000)
+    ap.add_argument('--no-spin-recording', action='store_true', help='Use an uninstrumented production executable')
     ap.add_argument('--replicas', type=int, default=5, choices=range(1, 6))
     args = ap.parse_args()
     exe = args.exe.resolve()
@@ -69,6 +70,7 @@ def main():
             if result.returncode != 0:
                 raise RuntimeError(f"{case['name']} seed {seed}: exit {result.returncode}; inspect {folder}")
             report = source.with_suffix('.html').read_text(encoding='utf-8')
+            assert 'Version 4.37.0' in report, 'Benchmark requires PACE4 4.37.0'
             counts = residual_counts(report)
             assert sum(counts.values()) == args.events, (case['name'], seed, counts)
             spins = {}
@@ -77,7 +79,7 @@ def main():
                     spins = {int(row['spin_index'])-1:int(row['count']) for row in csv.DictReader(f)}
             if case['mode'] == 2:
                 spins = {case['spin']:args.events}
-            else:
+            elif not args.no_spin_recording:
                 assert sum(spins.values()) == args.events, (case['name'], seed, spins)
             cs_header = source.with_suffix('.cs4').read_text().splitlines()[1].split()
             run = dict(case=case, seed=seed, seconds=duration, events=args.events,
