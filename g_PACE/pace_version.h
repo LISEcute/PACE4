@@ -1,5 +1,5 @@
-#define PACE_version "Version 4.37.0"
-#define PACE_date    "Last revision 26-OCT-2026"
+#define PACE_version "Version 4.38.1"
+#define PACE_date    "Last revision 27-OCT-2026"
 
 #define Max_NCASC 1000000
 #define Max_EBIN  4000
@@ -190,3 +190,56 @@
 // - Expose the bundled stylesheet as :/styles/mainstyle.qss, matching startup.
 // - Read/apply the stylesheet only after QFile::open succeeds.
 // - Synchronize Qt project and Windows executable version to 4.37.0.
+
+// Physics follow-up, 10/26/26 (4.37.0)
+// - Scan all residual-energy bins in CHNPRB; an empty upper bin no longer
+//   suppresses open proton/alpha transitions at lower residual energy.
+// - Preserve half-integer compound spin in CHNPRB (AJC is double), including
+//   allowed J=1/2 -> J=1/2 dipole transitions in odd-mass nuclei.
+// - Fill every rotational-energy entry for nonzero FYRST; avoid stale levels
+//   on later calculations by removing the premature GCLDP loop break.
+// - Add compiled physics regression cases for all three corrections and
+//   repeat portable PACE3 comparisons at FYRST=0 and FYRST=1.
+// - Keep the positive probability cutoff; do not reproduce the historical
+//   FORTRAN log-threshold bug solely to force numerical agreement.
+// - Correct the interior Coulomb potential to ZZI*(3-R*R/(RC*RC)); match
+//   the original charged-particle optical potential and surface continuity.
+
+// Process parallelization follow-up, 10/26/26 (4.37.0)
+// - Add tools/pace_parallel.py for bounded independent silent-mode processes.
+// - Preserve complete input bytes, NCASC and the positive probability cutoff.
+// - Assign explicit stable seeds; reject duplicate effective RNG start states.
+// - Isolate runtime configuration, database, outputs and fixed traceback names.
+// - Record hashes/status/timings and clean up children on failure or cancellation.
+// - Add serial/parallel reproducibility, failure-path and speed regression tools.
+// - MSVC/MinGW runner suites pass; 12-job, 40000-cascade benchmark preserves
+//   CS4 bytes at 1/2/4 workers. Median four-worker speedup: 2.56x on i7-1255U.
+
+// 4.38.0    10/27/26 - Native parallel interface
+// - Add a Parallel calculations dialog with saved-input queue, independent
+//   replicas, explicit editable seeds and a configurable worker count.
+// - Launch isolated silent calculations through asynchronous Qt processes;
+//   preserve input bytes, full NCASC and the existing probability cutoff.
+// - Provide progress, per-job status, cancellation and an Open results action.
+// - Record provenance and results in JSON; no Python runtime is required.
+// - Add native dialog/scheduler regression coverage and scientific replay tests.
+// - Synchronize application, Qt project and Windows resource version to 4.38.0.
+
+// 4.38.1    10/27/26 - Default high-spin correction
+// - Match fission-barrier storage and initialization to Max_MOM (200), rather
+//   than reading beyond the former 110-spin table at default fusion spins.
+// - Extend level-density spin rows and scratch arrays to the same supported
+//   limit; check row capacity before writing the level-density vector.
+// - Bound FIND searches at the last valid energy bin; do not inspect stale
+//   or out-of-range entries when the requested energy equals the endpoint.
+// - Skip nonexistent next-row FISROT interpolation when its weight is zero.
+// - Reproduce and eliminate default MinGW FIND energies 216.279/202.331 above
+//   the 144.5-MeV table; retain the probability cutoff and original inputs.
+// - Add targeted and end-to-end regressions; seven cases agree exactly across
+//   MSVC/MinGW and three low-spin controls retain their pre-fix CS4 bytes.
+// - Default seed 436: fission 248 -> 299 of 1000; Yb-172 270 -> 224.
+//   These are before/after algorithm results, not new experimental validation.
+// - Nine targeted tests pass; four fail against the saved pre-fix sources.
+// - Synchronize application, project and executable metadata to 4.38.1.
+// - Add Help (F1) in the parallel dialog with saved-input, seed, worker,
+//   output, cancellation and replay instructions; help stays available during runs.

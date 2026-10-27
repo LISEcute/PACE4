@@ -1,4 +1,8 @@
 #include <QApplication>
+#include <QAction>
+#include <QToolBar>
+#include <QSpinBox>
+#include "parallel_dialog.h"
 #include <QDir>
 #include <QFile>
 #include <QMetaObject>
@@ -149,6 +153,29 @@ int main(int argc, char** argv)
             outputsClosed();
             require(QFile::remove(engine.FFileNameEve), "Canceled event file must be closed");
             std::cout << "PASS actual cancellation and output cleanup\n";
+
+            auto parallelAction = engine.findChild<QAction*>("actionParallelCalculations");
+            require(parallelAction, "Parallel action must exist in the main window");
+            bool toolbarAction = false;
+            for(auto toolbar : engine.findChildren<QToolBar*>())
+                toolbarAction = toolbarAction || toolbar->actions().contains(parallelAction);
+            require(toolbarAction, "Parallel action must be accessible from the toolbar");
+            bool dialogOpened = false;
+            engine.show();
+            QTimer::singleShot(100, [&]() {
+                for(QWidget* widget : QApplication::topLevelWidgets()) {
+                    if(auto dialog = qobject_cast<ParallelDialog*>(widget)) {
+                        dialogOpened = dialog->isVisible() && dialog->isModal()
+                            && dialog->findChild<QSpinBox*>("workerCount");
+                        dialog->close();
+                    }
+                }
+            });
+            parallelAction->trigger();
+            require(dialogOpened, "Toolbar action must open modal parallel dialog with worker count");
+            require(engine.grab().save(QCoreApplication::applicationDirPath()+"/parallel-main-window.png"), "Save main window screenshot");
+            engine.hide();
+            std::cout << "PASS main-window parallel action and modal worker-count dialog\n";
         }
     } catch(const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';

@@ -17,8 +17,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 4.37.0.0 # major.minor.patch.build
-else:VERSION = 4.37.0    # major.minor.patch
+win32:VERSION = 4.38.1.0 # major.minor.patch.build
+else:VERSION = 4.38.1    # major.minor.patch
 
 win32 {
        QMAKE_TARGET_COPYRIGHT = "LISE group at FRIB/MSU"
@@ -45,6 +45,7 @@ SOURCES += \
     g_PACE/p_fileReadWrite.cpp \
     g_PACE/p_main.cpp\
     g_PACE/tfusion.cpp \
+    g_PACE/parallel_dialog.cpp \
     g_PACE/PACE3main.cpp \
     g_PACE/util.cpp \
     g_PACE/PACE3util.cpp \
@@ -65,6 +66,7 @@ SOURCES += \
 HEADERS  += \
     g_PACE/pace.h \
     g_PACE/tfusion.h \
+    g_PACE/parallel_dialog.h \
     g_PACE/pace_version.h \
     g_PACE/pace_random.h \
     g_PACE/Constant.h \

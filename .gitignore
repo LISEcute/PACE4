@@ -8,4 +8,17 @@ t/
 /_build_validation/
 /_build_msvc_style/
 test/
-tests/
+/tests/*
+# Keep reproducible regression and reference source files reviewable.
+!/tests/physics_regression.cpp
+!/tests/physics_regression.pro
+!/tests/generate_optical_reference.py
+!/tests/fortran_benchmark.py
+!/tests/compare_physics_benchmarks.py
+
+!/tests/parallel_benchmark.py
+!/tests/parallel_regression.py
+__pycache__/
+!/tests/parallel_dialog_regression.cpp
+!/tests/parallel_dialog_regression.pro
+!/tests/default_physics_regression.py

@@ -13,6 +13,9 @@
 #include <QKeyEvent>
 #include <QToolButton>
 
+#include <QAction>
+#include <QFileInfo>
+#include "parallel_dialog.h"
 #include "p_about.h"
 #include "tfusion.h"
 #include "ui_tfusion.h"
@@ -77,6 +80,16 @@ tfusion::tfusion(QWidget *parent):
   ui(new Ui::tfusion)
 {
   ui->setupUi(this);
+  auto* parallelAction = new QAction(ui->actionExecute->icon(), tr("Parallel calculations..."), this);
+  parallelAction->setObjectName("actionParallelCalculations");
+  parallelAction->setIconText(tr("Parallel..."));
+  parallelAction->setToolTip(tr("Run saved PACE4 inputs with independent processes and a chosen worker count"));
+  parallelAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_P));
+  ui->menuFile->insertAction(ui->actionExit, parallelAction);
+  ui->mainToolBar->insertAction(ui->action_Previous, parallelAction);
+  if(auto* button = qobject_cast<QToolButton*>(ui->mainToolBar->widgetForAction(parallelAction)))
+      button->setStyleSheet("QToolButton { margin: 0 4px; min-width: 0; }");
+  connect(parallelAction, &QAction::triggered, this, &tfusion::openParallelCalculations);
   setWindowFlags( Qt::Window | Qt::CustomizeWindowHint |
                   Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                   Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowCloseButtonHint );
@@ -541,6 +554,13 @@ int tfusion::RunPACE3local()
   return res;
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+void tfusion::openParallelCalculations()
+{
+    ParallelDialog dialog(this);
+    if(QFileInfo(FFileName).isFile()) dialog.addInputFiles({FFileName});
+    dialog.exec();
+}
+
 void tfusion::on_actionExecute_triggered()
 {
   getVariables();

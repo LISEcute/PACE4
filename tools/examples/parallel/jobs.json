@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "fixed",
+      "input": "fixed.pace",
+      "seed": 436
+    },
+    {
+      "id": "equal",
+      "input": "equal.pace",
+      "seed": 104729
+    },
+    {
+      "id": "generated",
+      "input": "generated.pace",
+      "seed": 130363
+    }
+  ]
+}

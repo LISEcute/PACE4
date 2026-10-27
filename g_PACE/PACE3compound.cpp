@@ -160,8 +160,10 @@ void PACE::GCLDP (double AMR, double AZR, int IADEF, double &FALIT,
 
   for(int L=1; L<=MAXXL; L++) {
       AL=L-1+SR;
-      if(_FYRST!=0.) { _EROT[L]=YRAST(AMR,AZR,AL)*_FYRST;  break;}
-      _EROT[L]=(AL+0.5)*(AL+0.5)/(2.*SIGSQ);
+      if(_FYRST!=0.)
+        _EROT[L]=YRAST(AMR,AZR,AL)*_FYRST;
+      else
+        _EROT[L]=(AL+0.5)*(AL+0.5)/(2.*SIGSQ);
     }
 
 
@@ -268,9 +270,13 @@ double PACE::FISROT(double A, double Z, double AL, double BARFAC) {
       BY=10.*Y+0.999;
       BY = min(BY,9);  BY=max(BY,1);
       IY=BY;  DY=BY-IY;
-      B2=(X1B[IY+1][IX+1] - X1B[IY+1][IX])*DX + X1B[IY+1][IX];
       B1=(X1B[IY  ][IX+1] - X1B[IY  ][IX])*DX + X1B[IY  ][IX];
-      BF=(B2-B1)*DY+B1;
+      BF=B1;
+      // An exact tabulated row needs no next row (which may be out of bounds).
+      if(DY != 0.) {
+          B2=(X1B[IY+1][IX+1] - X1B[IY+1][IX])*DX + X1B[IY+1][IX];
+          BF=(B2-B1)*DY+B1;
+        }
     }
   else       {
       if(X<=0.5) {
@@ -278,9 +284,13 @@ double PACE::FISROT(double A, double Z, double AL, double BARFAC) {
           BY = min(BY,11);  BY=max(BY,1);
           IX-=5;
           IY=BY;  DY=BY-IY;
-          B2=(X2B[IY+1][IX+1] - X2B[IY+1][IX])*DX + X2B[IY+1][IX];
           B1=(X2B[IY  ][IX+1] - X2B[IY  ][IX])*DX + X2B[IY  ][IX];
-          BF=(B2-B1)*DY+B1;
+          BF=B1;
+          // An exact tabulated row needs no next row (which may be out of bounds).
+          if(DY != 0.) {
+              B2=(X2B[IY+1][IX+1] - X2B[IY+1][IX])*DX + X2B[IY+1][IX];
+              BF=(B2-B1)*DY+B1;
+            }
         }
       else       {
           X = min(X,0.95);
@@ -289,9 +299,13 @@ double PACE::FISROT(double A, double Z, double AL, double BARFAC) {
           BY=100.*Y+0.999;
           BY = min(BY,19);  BY=max(BY,1);
           IY=BY;  DY=BY-IY;
-          B2=(X3B[IY+1][IX+1] - X3B[IY+1][IX])*DX + X3B[IY+1][IX];
           B1=(X3B[IY  ][IX+1] - X3B[IY  ][IX])*DX + X3B[IY  ][IX];
-          BF=(B2-B1)*DY+B1;
+          BF=B1;
+          // An exact tabulated row needs no next row (which may be out of bounds).
+          if(DY != 0.) {
+              B2=(X3B[IY+1][IX+1] - X3B[IY+1][IX])*DX + X3B[IY+1][IX];
+              BF=(B2-B1)*DY+B1;
+            }
         }
     }
 

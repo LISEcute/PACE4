@@ -101,7 +101,7 @@ void PACE::AMASS(double *A, fusion_event &c, int MODE, int& MEBIN, int *MAXJ, in
       //======================================================================================
 
       int MAXXL=_MAXC+9;
-      MAXXL = min(110,MAXXL);
+      MAXXL = min(Max_MOM,MAXXL);
 
       _IZR[MODE]=c.Z-_IZPART[MODE];
       _INR[MODE]=c.N-_INPART[MODE];
@@ -297,7 +297,7 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
            int *MAXJS, double *EBIN, double *RLEV, QTextStream& s)
 {
       //     ***********
-      double FACROT[111],TWOSR[111];
+      double FACROT[Max_MOM+1],TWOSR[Max_MOM+1];
 
 
       //      common/QMMJ/MAXC,FYRST,FACLA,EROT[110];
@@ -306,7 +306,7 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
 
       int J,IEX, IE, JMX, JJ;
       int II=Max_EBIN-IXPR;
-      int MAXXL=min(_MAXC+9,110);
+      int MAXXL=min(_MAXC+9,Max_MOM);
       double AJR,EEXRS,EEXRST, UEX, TEMP, FACT2, FACTT, AVLOG,RLEVD1;
 
 
@@ -332,6 +332,12 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
 
                   if(EEXRST>EMAX) {MEBIN=IE-1; break;}
 
+                  // One-based storage needs at least one entry even for an empty bin.
+                  if(KK + 1 >= DIM_RLEV) {
+                              fprintf(f09,"\\par  ***** LEVEL DENSITY EXCEEDED %d",DIM_RLEV);
+                              s << "<p>   ***** LEVEL DENSITY EXCEEDED " << qbuf.number(DIM_RLEV) << "</p>";
+                              ALIT=0.; MEBIN=IE-1; return;
+                        }
                   EBIN[IE]=EEXRST;
                   UEX=EEXRS-DELTA;
                   if(UEX<=0 ) {
@@ -353,7 +359,7 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
 
 
                   FACT2*=FACTT;
-                  MAXXL = min(MAXXL,110);
+                  MAXXL = min(MAXXL,Max_MOM);
                   //    FOLLOWING LOOP REPLACED FOR OPTIMIZATION ENHANCEMENT
                   JMX=MAXXL;
 
@@ -374,6 +380,12 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
                                     }
                         }
 
+                  // Check the full spin row before writing, not after the last entry.
+                  if(KK + JMX >= DIM_RLEV) {
+                              fprintf(f09,"\\par  ***** LEVEL DENSITY EXCEEDED %d",DIM_RLEV);
+                              s << "<p>   ***** LEVEL DENSITY EXCEEDED " << qbuf.number(DIM_RLEV) << "</p>";
+                              ALIT=0.; MEBIN=IE-1; return;
+                        }
                   for(J=1; J<=JMX; J++) {
                               AVLOG=log(FACT2)/2.0000+sqrt(ALIT*(UEX-FACROT[J]))-43.74912;
 
@@ -389,12 +401,6 @@ void GCLVD(double &ALIT, double /*SIGSQ*/, double FACT1, double DELTA, double EF
 
                   KK+=JMX;
 
-                  if(KK>=DIM_RLEV) {
-                              fprintf(f09,"\\par  ***** LEVEL DENSITY EXCEEDED %d",DIM_RLEV);
-                              s << "<p>   ***** LEVEL DENSITY EXCEEDED " << qbuf.number(DIM_RLEV) << "</p>";
-                              ALIT=0.;
-                              return;
-                        }
                   s.flush();
                   MAXJS[IE]=KK;
                   MAXJ [IE]=JMX;
@@ -443,9 +449,10 @@ void FIND(double E,int &IXRSM, double *EBIN, int MEBIN, int MODE, QTextStream& s
                   IXRSM=E-EBIN[1]+1.05;
                   IXRSM = min(IXRSM,MEBIN);
 
-                  while(EBIN[IXRSM]<=E) IXRSM++;
-
-                  do IXRSM--; while(EBIN[IXRSM] > E);
+                  // The final bin is a valid result. Never inspect stale entries
+                  // beyond MEBIN when E equals the table's upper endpoint.
+                  while(IXRSM < MEBIN && EBIN[IXRSM+1] <= E) ++IXRSM;
+                  while(IXRSM > 1 && EBIN[IXRSM] > E) --IXRSM;
             }
 }
 
@@ -453,7 +460,7 @@ void FIND(double E,int &IXRSM, double *EBIN, int MEBIN, int MODE, QTextStream& s
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void PACE::CHNPRB(int IPOT,int IXR, fusion_event &c, double SC, double SE,
                   double *RLEV, double& PROBM, int *MAXJ,
-                  int *MAXJS, double *EBIN, int IXPR, int IXMIN, QTextStream& s)
+                  int *MAXJS, double *EBIN, int /*IXPR*/, int IXMIN, QTextStream& s)
 {
       //
       //      IPOT - mode (n,p,a,g)
@@ -482,7 +489,6 @@ void PACE::CHNPRB(int IPOT,int IXR, fusion_event &c, double SC, double SE,
       static double  EBINT[DIM_EBIN],TL[25] ,TLSUM[25];
       static int MEBINT=0;
       static int IXPRT = 0;
-      //                           IXPR  = CHNPRB input parameter from AMASS(), used for PACE2 stopping condition
       //                           IXPRT = temporary index used only for fission level-density table
       //                           temporary IXPR for fission level-density table
 
@@ -508,11 +514,10 @@ void PACE::CHNPRB(int IPOT,int IXR, fusion_event &c, double SC, double SE,
       int JSC=c.J;
       int JMAX=c.J;
 
-      const int ICUT = (IXMIN < IXPR) ? 1 : 0;
-      int IPROBO = 0;
 
       int MODUL=(IPOT-1)*RLEV_MODE_STRIDE;
-      int AJC=c.J-1+SC;
+      // SC is 1/2 for odd-A nuclei; retain it in angular-momentum coupling.
+      const double AJC=c.J-1+SC;
       double ECM=0, AJR=0, SUMTL=0, DJ=0, SJ=0;
       int IGO=0, JSR=0, I, IZZ, INN, LLMAX=0, LLM=0, LMAX=0, LMIN=0, LM1, LM2;
       double /*SMIN=0, SMAX=0,*/ ALMAX=0, ALMIN=0, PRO=0;
@@ -522,8 +527,6 @@ void PACE::CHNPRB(int IPOT,int IXR, fusion_event &c, double SC, double SE,
       if(IPOT!=4)
             while (true)
                   {
-                        IPROBO = _IPROB;
-
                         ECM=c.Ex+_BE[IPOT]-EBIN[IXRSM];
                         IZZ=_IZR[IPOT];
                         INN=_INR[IPOT];
@@ -649,10 +652,8 @@ L58:
 
                         IXRSM--;
 
-                        // PACE2 stopping condition:
-                        // IF (IPROB.EQ.IPROBO.AND.ICUT.EQ.0.AND.TL(1).GE.1.E-10) RETURN
-                        if(_IPROB == IPROBO && ICUT == 0 && TL[1] >= 1.E-10)
-                              return;
+                        // Scan every residual-energy bin, as in PACE3. An empty
+                        // low-emission-energy bin can precede open charged channels.
 
                         JSC = JMAX;
 

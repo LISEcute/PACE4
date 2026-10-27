@@ -104,6 +104,7 @@ private slots:
     void q_clicked();
 
     void on_actionExecute_triggered();
+    void openParallelCalculations();
     void on_actionNext_triggered();
     void on_action_Previous_triggered();
     void on_actionWeb_Documentation_triggered();

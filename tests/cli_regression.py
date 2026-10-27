@@ -45,7 +45,7 @@ def main():
                     output = path.with_suffix(suffix)
                     assert output.is_file() and output.stat().st_size, (name, suffix)
                 report = path.with_suffix(".html").read_text(encoding="utf-8")
-                assert "4.37.0" in report, name + ": missing revised version"
+                assert "4.38.1" in report, name + ": missing revised version"
             else:
                 assert result.returncode == 1, (name, result.returncode, result.stderr)
             passed.append(name)

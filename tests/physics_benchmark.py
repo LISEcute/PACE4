@@ -18,8 +18,8 @@ CASES = [
 ]
 
 
-def input_text(case, events):
-    lines = [f"{events} 0 {case['mode']} 0 -1 1 0 10 0 1 0",
+def input_text(case, events, fyrst=0):
+    lines = [f"{events} 0 {case['mode']} {fyrst} -1 1 0 10 0 1 0",
              f"{case['z']} {case['a']} {case['energy']} 0 {case['spin']} 0"]
     if case['mode'] == 3:
         weights = [100 / 3 if j in (0, 10, 20) else 0 for j in range(21)]
@@ -45,6 +45,7 @@ def main():
     ap.add_argument('--exe', type=Path, required=True)
     ap.add_argument('--out', type=Path, required=True)
     ap.add_argument('--events', type=int, default=5000)
+    ap.add_argument('--fyrst', type=float, default=0.)
     ap.add_argument('--no-spin-recording', action='store_true', help='Use an uninstrumented production executable')
     ap.add_argument('--replicas', type=int, default=5, choices=range(1, 6))
     args = ap.parse_args()
@@ -52,13 +53,13 @@ def main():
     root = args.out.resolve()
     root.mkdir(parents=True, exist_ok=True)
     suite = dict(executable=str(exe), executable_sha256=hashlib.sha256(exe.read_bytes()).hexdigest(),
-                 events_per_run=args.events, fyrst=0, noshl=1, facla=10, aratio=1, barfac=-1, runs=[])
+                 events_per_run=args.events, fyrst=args.fyrst, noshl=1, facla=10, aratio=1, barfac=-1, runs=[])
     for case in CASES:
         for seed in SEEDS[:args.replicas]:
             folder = root / case['name'] / str(seed)
             folder.mkdir(parents=True, exist_ok=True)
             source = folder / 'input.pace'
-            source.write_text(input_text(case, args.events), encoding='ascii')
+            source.write_text(input_text(case, args.events, args.fyrst), encoding='ascii')
             env = dict(os.environ, QT_QPA_PLATFORM='offscreen', PACE4_SEED=str(seed),
                        PACE_BENCHMARK_SPINS=str(folder / 'spins.csv'))
             start = time.monotonic()

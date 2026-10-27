@@ -63,7 +63,7 @@ int   _NPOT;   // number of potentials
 double _EEXCN,_EEXCN_MAX, _EREC, _AJNUC;
 //double _FISSBR;
 //=========      common/MASS/
-double _FLMASS,_BARFAC,_ARATIO,_BARMAX,_FBARR[111];
+double _FLMASS,_BARFAC,_ARATIO,_BARMAX,_FBARR[Max_MOM+1];
 
 int _IZR[5],_INR[5], _LFISS;
 

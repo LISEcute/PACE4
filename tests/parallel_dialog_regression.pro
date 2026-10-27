@@ -1,0 +1,9 @@
+QT += core gui widgets testlib
+CONFIG += c++17 console testcase
+CONFIG -= app_bundle
+TEMPLATE = app
+TARGET = parallel_dialog_regression
+DESTDIR = $$OUT_PWD/bin
+INCLUDEPATH += $$PWD/../g_PACE
+SOURCES += $$PWD/parallel_dialog_regression.cpp $$PWD/../g_PACE/parallel_dialog.cpp
+HEADERS += $$PWD/../g_PACE/parallel_dialog.h

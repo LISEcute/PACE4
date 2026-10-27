@@ -1012,7 +1012,8 @@ void TLOM(int IPOT, double AMP, double AZP, double AMT,
 
       if(ZZO==0.) VC=0.;
       else if(R>RC)    VC=ZZO/R;
-      else             VC=ZZI*(3.0-R*R)/(RC*RC);
+      // Uniformly charged sphere: continuous with ZZO/R at its surface.
+      else             VC=ZZI*(3.0-R*R/(RC*RC));
 
       VR[I]=VV0+VC;
       //---------------
