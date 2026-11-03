@@ -17,8 +17,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 4.38.1.0 # major.minor.patch.build
-else:VERSION = 4.38.1    # major.minor.patch
+win32:VERSION = 4.38.2.0 # major.minor.patch.build
+else:VERSION = 4.38.2    # major.minor.patch
 
 win32 {
        QMAKE_TARGET_COPYRIGHT = "LISE group at FRIB/MSU"
@@ -53,6 +53,7 @@ SOURCES += \
     g_PACE/PACE3Levden.cpp \
     g_PACE/PACE3product.cpp \
     g_PACE/PACE3statis.cpp \
+    g_PACE/pace_angular_plots.cpp \
     g_PACE/tfusion_2.cpp \
     g_PACE/tfusion_2a.cpp \
     g_PACE/tfusion_2a2.cpp \
@@ -76,6 +77,7 @@ HEADERS  += \
     g_PACE/fisrot.h \
     g_PACE/yrast.h \
     g_PACE/barfit.h \
+    g_PACE/pace_angular_plots.h \
     g_PACE/tfusion_2.h \
     g_PACE/tfusion_2a.h \
     g_PACE/tfusion_2a2.h \

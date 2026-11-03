@@ -10,6 +10,7 @@
 #include <QToolBar>
 #include <QIcon>
 #include <QMainWindow>
+#include <QDesktopServices>
 
 
 extern QString localPATH;
@@ -18,6 +19,7 @@ extern QString localPATH;
 results::results(const QString &filename, QWidget *parent) :
     QDialog(parent)
 {
+    plotData = pacePlotDataSnapshot();
    // QIcon ico(":icons/pace.png");
     this->setWindowIcon(QIcon(":/pace4.png"));
     //Qt::WindowFlags flags = windowFlags();
@@ -50,14 +52,52 @@ results::results(const QString &filename, QWidget *parent) :
     QString content = stream.readAll();
     resFile->close();
 
-    text = new QTextEdit(content);
+    text = new QTextBrowser;
     text->setReadOnly(true);
+    text->setOpenLinks(false);
+    text->setOpenExternalLinks(false);
+    text->setHtml(content);
+    connect(text, &QTextBrowser::anchorClicked, this, &results::link_clicked);
     layout->addWidget(text);
     this->setMinimumSize(1000,800);
     layout->setContentsMargins(0,0,0,0); //Qt6
     layout->setSpacing(0);
     setLayout(layout);
 
+}
+
+void results::link_clicked(const QUrl &url)
+{
+    if (url.scheme() != "pace")
+    {
+        QDesktopServices::openUrl(url);
+        return;
+    }
+
+    if (url.host() == "plot_cm_spectra")
+    {
+        openPaceCMSpectraPlotWindow(this, plotData);
+        return;
+    }
+
+    PaceAngularPlotKind kind = PacePlotEnergyVsTheta;
+    if (url.host().endsWith("ntheta")) kind = PacePlotCountsVsTheta;
+    else if (url.host().endsWith("ne")) kind = PacePlotCountsVsEnergy;
+    else if (url.host().endsWith("dcsdtheta")) kind = PacePlotCrossSectionVsTheta;
+
+    if (url.host().startsWith("plot_all"))
+    {
+        openPaceAngularPlotWindow(this, plotData, true, -1, kind);
+        return;
+    }
+
+    if (url.host() == "plot_table" || url.host() == "plot_ntheta" ||
+        url.host() == "plot_ne" || url.host() == "plot_dcsdtheta")
+    {
+        bool ok = false;
+        const int index = url.path().mid(1).toInt(&ok);
+        if (ok) openPaceAngularPlotWindow(this, plotData, false, index, kind);
+    }
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 void results::save_clicked()

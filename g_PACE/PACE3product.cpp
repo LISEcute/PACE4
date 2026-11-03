@@ -8,6 +8,7 @@
 
 #include "pace_version.h"
 #include "ParticleStates.h"
+#include "pace_angular_plots.h"
 
 #include <cmath>
 
@@ -15,7 +16,8 @@
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
 
 void PRODCT(int II, int IZ, int IN, int NCASC, fusion_event **a, const char *filename_cs, QTextStream& s);
-void OUTRES(int ICTRL, int NP, fusion_event *f, QTextStream &s);
+void OUTRES(int ICTRL, int NP, fusion_event *f, QTextStream &s,
+            const QString &plotLabel = QString());
 int  ISUM(int I, int J, int L1, int L2) ;
 //extern char* ElementName(int IZ) ;
 extern QString ElementName(int IZ);
@@ -228,15 +230,30 @@ s <<"<h2 align=center>1. Yields of residual nuclei</h2><table align=center cellp
       }
       fprintf(f09,"\\cf0\\f0\\fs16  ");
 
+      s << "<p>"
+           "<a href=\"pace://plot_all\">Plot All: E vs &theta;</a> &nbsp; "
+           "<a href=\"pace://plot_all_ntheta\">Plot All: N vs &theta;</a> &nbsp; "
+           "<a href=\"pace://plot_all_ne\">Plot All: N vs Energy</a> &nbsp; "
+           "<a href=\"pace://plot_all_dcsdtheta\">Plot All: d&sigma;/d&theta; vs &theta;</a>"
+           "</p>";
+
   for(I=1; I<=K; I++) {
       fprintf(f09,"\\cf3\\f2\\fs20\\b \\par\\par%s     2.%d  Energy and angular distribution of ",s35x,I);
       s << "<br><h3>" <<  "2." << qbuf.number(I) << " Energy and angular distribution of ";
-      if(I==K) {fprintf(f09,"\\cf1  ALL \\cf3  residual nuclei"); s << "ALL residual nuclei</h3>";}
+      QString plotLabel;
+      if(I==K) {
+          fprintf(f09,"\\cf1  ALL \\cf3  residual nuclei");
+          s << "ALL residual nuclei</h3>";
+          plotLabel = QString("2.%1 Energy and angular distribution of ALL residual nuclei").arg(I);
+      }
       else     {
           fprintf(f09,"residual nucleus  Z=\\cf1 %d\\cf3    N=\\cf1 %d\\cf3   \\cf2 (%d%.2s)\\cf3 ",
                                 IZNUC[I],INNUC[I],IZNUC[I]+INNUC[I],ElementName(IZNUC[I]).toStdString().c_str());
           s << " residual nucleus Z = <span style=\"color:blue\">" << qbuf.number(IZNUC[I]) << "</span> and  N = <span style=\"color:blue\">" << qbuf.number(INNUC[I]) << "</span> ("
                << qbuf.number(IZNUC[I]+INNUC[I]) << ElementName(IZNUC[I])[0] <<  ElementName(IZNUC[I])[1] << ")</h3>";
+          plotLabel = QString("2.%1 Energy and angular distribution of residual nucleus Z = %2 and N = %3 (%4%5)")
+                          .arg(I).arg(IZNUC[I]).arg(INNUC[I])
+                          .arg(IZNUC[I] + INNUC[I]).arg(ElementName(IZNUC[I]));
       }
       fprintf(f09,"\\cf0\\f0\\fs14\\b0 ");
 
@@ -244,7 +261,7 @@ s <<"<h2 align=center>1. Yields of residual nuclei</h2><table align=center cellp
       IK=I;
       if(IK==K) IK=16;
       s.flush();
-      OUTRES(3,IK,a[I],s);
+      OUTRES(3,IK,a[I],s,plotLabel);
       fprintf(f09,"\\fs16 ");
   }
   s.flush();
@@ -252,7 +269,8 @@ s <<"<h2 align=center>1. Yields of residual nuclei</h2><table align=center cellp
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-void OUTRES(int ICTRL, int NP, fusion_event *f, QTextStream& s)
+void OUTRES(int ICTRL, int NP, fusion_event *f, QTextStream& s,
+            const QString &plotLabel)
 {
 
 //
@@ -400,6 +418,20 @@ else if(ICTRL==2) {
 else if(ICTRL>2) {
 
 int k;
+
+const int plotIndex = paceRegisterAngularTable(plotLabel, NP, NR, ELOW, DELE, DELANG,
+                                               _SIGMA, _NCASC);
+
+auto appendPlotLinks = [&]()
+{
+    if (plotIndex < 0) return;
+    s << "<p>"
+         "<a href=\"pace://plot_table/" << plotIndex << "\">Plot E vs &theta;</a> &nbsp; "
+         "<a href=\"pace://plot_ntheta/" << plotIndex << "\">Plot N vs &theta;</a> &nbsp; "
+         "<a href=\"pace://plot_ne/" << plotIndex << "\">Plot N vs Energy</a> &nbsp; "
+         "<a href=\"pace://plot_dcsdtheta/" << plotIndex << "\">Plot d&sigma;/d&theta; vs &theta;</a>"
+         "</p><p>&nbsp;</p>";
+};
 
 char s500[134]="\\par\\fs14 "
 "---------------------------------------------------------------------------------------------------------------------------";
@@ -605,7 +637,7 @@ for(k=1;k<=18;k++) {
       s << "</tr>";
       fprintf(f09,s503);
 
-      if(IWR==0){return;}
+      if(IWR==0){s << "</table>"; appendPlotLinks(); return;}
 
       for(I=1; I<=4; I++) {
           if(I!=4){fprintf(f09,s36,EWR1[I],EWR2[I]); s << "<tr><td>" << qbuf.number(EWR1[I]) << " - " << qbuf.number(EWR2[I]) << "</td>";
@@ -616,7 +648,7 @@ for(k=1;k<=18;k++) {
               }else  {            fprintf(f09,sDe); s << "<td></td>";}
           s << "</tr>";
       }
-      s << "</table><p>&nbsp;</p>";
+      s << "</table>";
       fprintf(f09,s500);
       IS=0;
 
@@ -624,7 +656,7 @@ for(k=1;k<=18;k++) {
           for(LQ=19; LQ<=37; LQ++)
               IS+=NR[NP][IJ][LQ];
 
-      if(IS == 0) return;
+      if(IS == 0) { appendPlotLinks(); return; }
       /// 18-36  degrees
       s << "<table border=1 cellspacing=0><tr><th>Energy Range</th><th colspan=18>Angular range (deg)</th></tr><tr><th>(MeV)</th>";
       fprintf(f09,s30);
@@ -683,7 +715,7 @@ for(k=1;k<=18;k++) {
 
       s << "</tr>";
       fprintf(f09,s501);
-      if(IWR==0){s << "</table>"; return;}
+      if(IWR==0){s << "</table>"; appendPlotLinks(); return;}
 
      for(I=1; I<=3; I++){
          s << "<tr><td>" << EWR1[I] << " - " << EWR2[I] << "</td>";
@@ -700,6 +732,7 @@ for(k=1;k<=18;k++) {
           else             {   fprintf(f09,sDe); s << "<td></td>";}
 
       s << "</tr></table>";
+      appendPlotLinks();
       fprintf(f09,s500);
       fprintf(f09,"------ ");
 

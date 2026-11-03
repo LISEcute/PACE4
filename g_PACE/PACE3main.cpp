@@ -17,6 +17,7 @@
 #include <QDate>
 #include <QTime>
 #include "TracebackRecord.h"  // v.4.34.15 refactor: safe traceback binary record
+#include "pace_angular_plots.h"
 
 #include "pace.h"
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
@@ -182,6 +183,7 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
                 const char *filename_cs, const char *filename_particles,
                 const char *filename_html)
 {
+  paceResetPlotData();
 
   short int IBUF2[10];
   //MK    QVector<int> buf2List(10);
@@ -1144,7 +1146,8 @@ L201:
   fprintf(f09,"\\par"
               "\\par\\b --------  C.M. spectra  of  emitted  particles ------\\b0 "
               "\\par\\par\\b\\cf1        Ex(MeV)     Neut     Prot    Alpha    Gamma   \\b0\\cf0 ");
-  *htmlStream << "<p>&nbsp;</p><h3> --------  C.M. spectra  of  emitted  particles ------ </h3><p>&nbsp;</p>"
+  *htmlStream << "<p>&nbsp;</p><h3> --------  C.M. spectra  of  emitted  particles ------ </h3>"
+                 "<p><a href=\"pace://plot_cm_spectra\">Plot C.M. spectra</a></p><p>&nbsp;</p>"
                  "<table border=1 cellspacing=0 cellpadding=2><tr><th>Ex(MeV)</th><th>Neut</th><th>Prot</th><th>Alpha</th><th>Gamma</th></tr>";
 
 
@@ -1177,6 +1180,8 @@ L201:
     }
 
   for(IST=1; IST<=4; IST++) _BE[IST]/=(NSPC[IST][51]+1.E-9);
+
+  paceRegisterCMSpectra(NSPC, _BE);
 
 
   fprintf(f09,"\\par |   \\b   Total   \\b0   |\\b  %6d \\b0 |\\b  %6d \\b0 |\\b  %6d \\b0 |\\b  %6d \\b0 |",

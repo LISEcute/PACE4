@@ -3,7 +3,10 @@
 
 #include <QDialog>
 #include <QFile>
-#include <QTextEdit>
+#include <QTextBrowser>
+#include <QUrl>
+
+#include "pace_angular_plots.h"
 
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 class results : public QDialog
@@ -18,10 +21,12 @@ signals:
 public slots:
     void save_clicked();
     void print_clicked();
+    void link_clicked(const QUrl &url);
 
 private:
     QFile *resFile;
-    QTextEdit *text;
+    QTextBrowser *text;
+    PacePlotData plotData;
 };
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 #endif // RESULTS_H

@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "pace.h"
+#include "pace_angular_plots.h"
 #include <QTextStream>
 
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
@@ -391,6 +392,7 @@ void PACE::OUTEM(int ICTL, QTextStream& s, int MODE, double EEML, double AEML) {
   extern double _SIGMA;
   extern int _NCASC;
   extern double _DSIG[19];
+  extern double _VQS[4];
   //==================     common/EM/
   extern int eNT[5],eN[4][33][19],eNG[33],eNW[4][5][19],eNGW[5],eNGB[33],eNGBW[5],eNGT[33],eNGTW[33];
   extern double eEW[4],eEW1[5],eEW2[4];
@@ -409,6 +411,24 @@ void PACE::OUTEM(int ICTL, QTextStream& s, int MODE, double EEML, double AEML) {
   char s500ahtml[95]="<p>=======================================================================================</p>";
   char s502[92]= "\\par|------------------------------------|------------------|---------------|-------------|";
   //char *s502html= "<p>|------------------------------------|------------------|---------------|-------------|</p>";
+
+  auto appendParticlePlotLinks = [&](int plotIndex)
+  {
+      if (plotIndex < 0) return;
+      s << "<p>"
+           "<a href=\"pace://plot_table/" << plotIndex << "\">Plot E vs &theta;</a> &nbsp; "
+           "<a href=\"pace://plot_ntheta/" << plotIndex << "\">Plot N vs &theta;</a> &nbsp; "
+           "<a href=\"pace://plot_ne/" << plotIndex << "\">Plot N vs Energy</a> &nbsp; "
+           "<a href=\"pace://plot_dcsdtheta/" << plotIndex << "\">Plot d&sigma;/d&theta; vs &theta;</a>"
+           "</p>";
+  };
+
+  auto appendGammaPlotLink = [&](int plotIndex)
+  {
+      if (plotIndex < 0) return;
+      s << "<p><a href=\"pace://plot_ne/" << plotIndex
+        << "\">Plot N vs Energy</a></p>";
+  };
   //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWw
 
   //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWw
@@ -505,21 +525,29 @@ void PACE::OUTEM(int ICTL, QTextStream& s, int MODE, double EEML, double AEML) {
 
       //----------------------------------------  start cikl L36
       for(MODE=1; MODE<=3; MODE++) {
+          int particlePlotIndex = -1;
+          QString particlePlotLabel;
           fprintf(f09,"\\par\\par\\par  %s\\b\\cf1\\f2 ",s35x);
           s << "<p>&nbsp;</p><p>";// << QString::fromUtf8(s35x) << "</p>";
           switch(MODE) {
             case 1 : fprintf(f09,"Neutron\\cf3  spectra in laboratory coordinates\\cf0  %d\\cf3  events\\cf0 ",eNT[1]);
               s << "<span style=\"color:red\">Neutron </span> spectra in laboratory coordinates " << QString::number(eNT[1]) << " events</p>";
+              particlePlotLabel = "Energy and angular distribution of emitted neutrons";
               break;
             case 2 : if(eNT[2]==0)continue;
               fprintf(f09,"Proton\\cf3  spectra in laboratory coordinates\\cf0  %d\\cf3  events\\cf0 ",eNT[2]);
               s << "<span style=\"color:red\">Proton </span> spectra in laboratory coordinates " << QString::number(eNT[2]) << " events</p>";
+              particlePlotLabel = "Energy and angular distribution of emitted protons";
               break;
             case 3 : if(eNT[3]==0)continue;
               fprintf(f09,"Alpha\\cf3  spectra in laboratory coordinates\\cf0  %d\\cf3  events\\cf0 ",eNT[3]);
               s << "<span style=\"color:red\">Alpha </span> spectra in laboratory coordinates " << QString::number(eNT[3]) << " events</p>";
+              particlePlotLabel = "Energy and angular distribution of emitted alpha particles";
               break;
             };
+
+          particlePlotIndex = paceRegisterParticleAngularTable(
+              particlePlotLabel, MODE, eN, _VQS[MODE], _SIGMA, _NCASC);
 
           fprintf(f09,"\\b0\\f0\\fs14 %s"
                       "\\par | Energy range |_________________________________________ Angular range (deg)_______________________________________________|"
@@ -599,7 +627,7 @@ void PACE::OUTEM(int ICTL, QTextStream& s, int MODE, double EEML, double AEML) {
           s << "</tr>";
           fprintf(f09,"%s",s500);
           // s << QString::fromUtf8(s500html);
-          if(IWE==0)continue;
+          if(IWE==0) { s << "</table>"; appendParticlePlotLinks(particlePlotIndex); continue; }
 
 
           for(KW=1; KW<=3; KW++)    {
@@ -632,6 +660,7 @@ void PACE::OUTEM(int ICTL, QTextStream& s, int MODE, double EEML, double AEML) {
           //s << "</p><p>" << QString::fromUtf8(s500html) << "</p>";
           fprintf(f09,"%s\\fs16 ",s500);
           s << "</table>";
+          appendParticlePlotLinks(particlePlotIndex);
         }
 
 
@@ -641,6 +670,8 @@ void PACE::OUTEM(int ICTL, QTextStream& s, int MODE, double EEML, double AEML) {
       MODE=4;
       fprintf(f09,"\\par\\par\\b\\f2\\cf1\\fs16 %s     Gamma\\cf3  ray spectrum \\cf0 %d\\cf1  events\\b0\\f2\\cf2\\fs16 ",s35x,eNT[4]);
       s << "<p>&nbsp;</p><p><span style=\"color:red\">  Gamma </span>ray spectrum " << QString::number(eNT[4]) << "  events</p>";
+      const int gammaPlotIndex = paceRegisterGammaEnergyTable(
+          "Energy distribution of emitted gamma particles", eNGT);
 
 
       fprintf(f09,"\\par\\par  Emission from unbound and bound states(*), and total gamma ray spectrum");
@@ -681,6 +712,7 @@ void PACE::OUTEM(int ICTL, QTextStream& s, int MODE, double EEML, double AEML) {
       fprintf(f09,"%s",s500a);
       //s << QString::fromUtf8(s500ahtml);
       s << "</table>";
+      appendGammaPlotLink(gammaPlotIndex);
       // s.flush();
     }
   //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWw

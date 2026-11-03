@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QSignalMapper>
 #include <QDesktopServices>
+#include <QDebug>
 
 double _QcLoc2;
 

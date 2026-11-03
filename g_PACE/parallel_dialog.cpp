@@ -262,7 +262,7 @@ void ParallelDialog::refreshRows() {
         seed->setMinimumWidth(std::max(170, seed->fontMetrics().horizontalAdvance("2147483646") + 70));
         seed->setToolTip(tr("Keep this seed to reproduce this calculation. Every row needs a different RNG starting state."));
         const QString id = job.id;
-        connect(seed, &QSpinBox::valueChanged, this, [this, id](int value) {
+        connect(seed, QOverload<int>::of(&QSpinBox::valueChanged), this, [this, id](int value) {
             for(auto& item : m_jobs) if(item.id == id) { item.seed = quint32(value); break; }
         });
         m_table->setCellWidget(row, 2, seed); m_table->setItem(row, 3, textItem(job.state));

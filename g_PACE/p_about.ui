@@ -10,6 +10,11 @@
     <height>563</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>.AppleSystemUIFont</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>About PACE4</string>
   </property>
@@ -57,7 +62,6 @@
         <font>
          <family>Bookman Old Style</family>
          <pointsize>25</pointsize>
-         <weight>75</weight>
          <italic>false</italic>
          <bold>true</bold>
         </font>
@@ -170,7 +174,6 @@ margin: 0px;</string>
      <property name="font">
       <font>
        <pointsize>10</pointsize>
-       <weight>75</weight>
        <italic>false</italic>
        <bold>true</bold>
       </font>
@@ -191,7 +194,6 @@ margin: 0px;</string>
      <property name="font">
       <font>
        <pointsize>10</pointsize>
-       <weight>75</weight>
        <italic>false</italic>
        <bold>true</bold>
       </font>
@@ -220,7 +222,7 @@ margin: 0px;</string>
 color: rgb(210, 210, 210);</string>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The PACE2 program has been ported to MS Windows by O.B. Tarasov within the framework of the program LISE&lt;span style=&quot; vertical-align:super;&quot;&gt;++&lt;/span&gt;, and named PACE4. The code has been updated with AME database, Q.-M. tunneling approach, utilities, plots.This program has been made into a cross-platform application in the Qt-framework by M.P. Kuchera.&lt;/p&gt;&lt;p&gt;The GUI-version is currently maintained by O.B.Tarasov&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;The PACE2 program has been ported to MS Windows by O.B. Tarasov within the framework of the program LISE&lt;/span&gt;&lt;span style=&quot; font-size:11pt; vertical-align:super;&quot;&gt;++&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;, and named PACE4. The code has been updated with AME database, Q.-M. tunneling approach, utilities, plots.This program has been made into a cross-platform application in the Qt-framework by M.P. Kuchera.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Angular Distribution Plots implemented by A. Ray&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;The GUI-version is currently maintained by O.B.Tarasov&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -318,7 +320,6 @@ color: rgb(210, 210, 210);</string>
         <property name="font">
          <font>
           <pointsize>9</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -338,7 +339,6 @@ color: rgb(210, 210, 210);</string>
         <property name="font">
          <font>
           <pointsize>9</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>

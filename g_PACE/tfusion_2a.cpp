@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QSpacerItem>
 #include <QPainter>
+#include <QDebug>
 
 extern int _IZC, _IAC, _LMINN, _INPUT;
 extern double _EEXCN, _EREC, _AJNUC,_EEXCN_MAX;

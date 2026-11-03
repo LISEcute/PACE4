@@ -1,5 +1,5 @@
-#define PACE_version "Version 4.38.1"
-#define PACE_date    "Last revision 27-OCT-2026"
+#define PACE_version "Version 4.38.2"
+#define PACE_date    "Last revision 2-Nov-2026"
 
 #define Max_NCASC 1000000
 #define Max_EBIN  4000
@@ -243,3 +243,11 @@
 // - Synchronize application, project and executable metadata to 4.38.1.
 // - Add Help (F1) in the parallel dialog with saved-input, seed, worker,
 //   output, cancellation and replay instructions; help stays available during runs.
+
+
+// 4.38.2    11/02/26 - Angular-distribution plotting - Arjun
+// - Add per-table and Plot All angular-distribution plots.
+// - Add neutron, proton, alpha, gamma and C.M. spectra plots.
+// - Restore Gaussian, evaporation and Coulomb-barrier fitting logic.
+// - Exclude aggregate residual underflow/overflow bins from plots and fits.
+// - Add PNG export; full build and regression tests pass.

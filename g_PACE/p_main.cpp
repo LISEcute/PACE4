@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QStandardPaths>
 #include <QCoreApplication>
+#include <QDebug>
 
 
 extern void getInitialDir(void);
