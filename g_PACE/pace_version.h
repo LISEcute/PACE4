@@ -250,4 +250,4 @@
 // - Add neutron, proton, alpha, gamma and C.M. spectra plots.
 // - Restore Gaussian, evaporation and Coulomb-barrier fitting logic.
 // - Exclude aggregate residual underflow/overflow bins from plots and fits.
-// - Add PNG export; full build and regression tests pass.
+// - Add PNG export
