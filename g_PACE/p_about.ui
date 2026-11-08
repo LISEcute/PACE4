@@ -74,7 +74,7 @@ margin-bottom:0;</string>
         <string>PACE4</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
        <property name="margin">
         <number>15</number>
@@ -124,7 +124,7 @@ margin: 0px;</string>
         <string>fusion-evaporation code</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -153,13 +153,13 @@ margin: 0px;</string>
       <string notr="true">color: rgb(222, 226, 197); background-color: rgb(0, 90, 255);</string>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;JULIAN modified version&lt;br/&gt;Monte-Carlo code coupling angular momentum&lt;br/&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;by M.Hillman and Y.Eyal &lt;/span&gt;&lt;/p&gt;&lt;p&gt;PACE : Projection Angular-momentum Coupled Evaporation&lt;br/&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;by Avigdor Gavron&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
      <property name="margin">
       <number>8</number>
@@ -185,7 +185,7 @@ margin: 0px;</string>
       <string>Version 1.5</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -205,12 +205,17 @@ margin: 0px;</string>
       <string>28-April-2015</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
    <item>
     <widget class="ClickableLabel" name="label_mail">
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
      <property name="cursor">
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
@@ -222,10 +227,14 @@ margin: 0px;</string>
 color: rgb(210, 210, 210);</string>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;The PACE2 program has been ported to MS Windows by O.B. Tarasov within the framework of the program LISE&lt;/span&gt;&lt;span style=&quot; font-size:11pt; vertical-align:super;&quot;&gt;++&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;, and named PACE4. The code has been updated with AME database, Q.-M. tunneling approach, utilities, plots.This program has been made into a cross-platform application in the Qt-framework by M.P. Kuchera.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Angular Distribution Plots implemented by A. Ray&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;The GUI-version is currently maintained by O.B.Tarasov&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>PACE4 originated as a port of PACE2 to Microsoft Windows by O. B. Tarasov as part of the LISE&lt;sup&gt;++&lt;/sup&gt; project. Subsequent updates incorporated the Atomic Mass Evaluation (AME) database, a quantum-mechanical tunneling approach, additional utilities, and plotting capabilities. M. P. Kuchera adapted PACE4 into a cross-platform application using the Qt framework. Angular and energy plots were implemented by A. Ray.&lt;br&gt;&lt;br&gt;
+The graphical user interface (GUI) version is  maintained by O. B. Tarasov.</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::TextFormat::RichText</enum>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -238,7 +247,7 @@ color: rgb(210, 210, 210);</string>
       <string notr="true">background-color: rgb(0, 90, 255);</string>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_2" columnstretch="2,3,1">
       <property name="leftMargin">
@@ -280,7 +289,7 @@ color: rgb(210, 210, 210);</string>
          <string>http://lise.nscl.msu.edu</string>
         </property>
         <property name="textFormat">
-         <enum>Qt::AutoText</enum>
+         <enum>Qt::TextFormat::AutoText</enum>
         </property>
         <property name="openExternalLinks">
          <bool>true</bool>
@@ -308,7 +317,7 @@ color: rgb(210, 210, 210);</string>
          <string>http://lise.nscl.msu.edu/pace4.html</string>
         </property>
         <property name="textFormat">
-         <enum>Qt::AutoText</enum>
+         <enum>Qt::TextFormat::AutoText</enum>
         </property>
         <property name="openExternalLinks">
          <bool>true</bool>
@@ -330,7 +339,7 @@ color: rgb(210, 210, 210);</string>
          <string>PACE4</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <set>Qt::AlignmentFlag::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -349,7 +358,7 @@ color: rgb(210, 210, 210);</string>
          <string>LISE&lt;sup&gt;++&lt;/sup&gt;</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <set>Qt::AlignmentFlag::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -394,7 +403,7 @@ color: rgb(210, 210, 210);</string>
         <string>for citations please&lt;br&gt; use the following</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
        <property name="wordWrap">
         <bool>true</bool>

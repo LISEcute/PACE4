@@ -1,5 +1,5 @@
-#define PACE_version "Version 4.38.2"
-#define PACE_date    "Last revision 2-Nov-2026"
+#define PACE_version "Version 4.38.3"
+#define PACE_date    "Last revision 8-Nov-2026"
 
 #define Max_NCASC 1000000
 #define Max_EBIN  4000
@@ -251,3 +251,5 @@
 // - Restore Gaussian, evaporation and Coulomb-barrier fitting logic.
 // - Exclude aggregate residual underflow/overflow bins from plots and fits.
 // - Add PNG export
+
+// 4.38.3    11/08/26 - About dialog correction
