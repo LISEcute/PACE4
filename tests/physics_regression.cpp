@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <vector>
+#include <limits>
 
 QString FileArg;
 int fontsizeGlobal = 9;
@@ -37,6 +38,7 @@ static void require(bool ok, const char* message) {
 }
 
 int main(int argc, char** argv) {
+    std::cout << std::unitbuf;
     QApplication app(argc, argv);
     PACE pace;
     QString output;
@@ -146,6 +148,31 @@ int main(int argc, char** argv) {
                     "Supported high-spin barrier was not initialized");
             require(_FBARR[j]>=0, "Nonnegative tabulated barrier became negative");
         }
+    });
+    test("barrierless termination follows the physical barrier, not an empty density table", [&]() {
+        _IS=0; _BARFAC=1;
+        for(int j=1; j<=Max_MOM; ++j) _FBARR[j]=pace.SIERK(172,70,j-1,1);
+        require(_FBARR[103]>0 && _FBARR[104]==0,
+                "Yb172 rotational stability boundary changed");
+        fusion_event c;
+        for(int spin=0; spin<Max_MOM; ++spin) {
+            c.init(70,102,143.076,spin+1,0);
+            require(pace.isBarrierlessFission(c)==(spin>=103),
+                    "Barrierless classification does not follow the Yb172 barrier");
+        }
+        c.init(70,102,143.076,118,0);
+        for(double invalid : {0., -1., std::numeric_limits<double>::quiet_NaN(),
+                              std::numeric_limits<double>::infinity()}) {
+            _FBARR[1]=invalid;
+            require(!pace.isBarrierlessFission(c), "Missing zero-spin barrier implies instability");
+        }
+        _FBARR[1]=30.;
+        _FBARR[c.J]=std::numeric_limits<double>::quiet_NaN();
+        require(!pace.isBarrierlessFission(c), "Invalid spin barrier implies instability");
+        _FBARR[c.J]=0.; _BARFAC=0.;
+        require(!pace.isBarrierlessFission(c), "Zero barrier multiplier implies rotational instability");
+        _BARFAC=1.; c.Ex=0.;
+        require(!pace.isBarrierlessFission(c), "Completed cascade should be reclassified");
     });
     test("level densities include all supported spins", [&]() {
         _MAXC=Max_MOM; _IADEF=2; _EX=0; _TT=1;

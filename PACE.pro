@@ -17,8 +17,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 4.38.3.0 # major.minor.patch.build
-else:VERSION = 4.38.3    # major.minor.patch
+win32:VERSION = 4.38.5.0 # major.minor.patch.build
+else:VERSION = 4.38.5    # major.minor.patch
 
 win32 {
        QMAKE_TARGET_COPYRIGHT = "LISE group at FRIB/MSU"

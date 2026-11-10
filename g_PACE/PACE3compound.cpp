@@ -3,6 +3,7 @@
 #include "ParticleStates.h"
 #include "pace_version.h"
 #include <math.h>
+#include <cmath>
 #include <stdio.h>
 #include "pace.h"
 #include "pace_angular_plots.h"
@@ -317,6 +318,18 @@ double PACE::FISROT(double A, double Z, double AL, double BARFAC) {
 
 
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+bool PACE::isBarrierlessFission(const fusion_event& c) const
+{
+  extern double _FBARR[Max_MOM+1], _BARFAC;
+  // A vanished rotational barrier has no metastable compound minimum.
+  // Require a positive, finite zero-spin barrier: a missing/invalid barrier
+  // or a zero scale factor must not be interpreted as rotational instability.
+  return c.Ex > 0. && c.J > 1 && c.J <= Max_MOM &&
+         std::isfinite(_BARFAC) && _BARFAC > 0. &&
+         std::isfinite(_FBARR[1]) && _FBARR[1] > 0. &&
+         _FBARR[c.J] == 0.;
+}
+
 double PACE::SIERK(double A , double Z, double AL, double BARFAC) {
 
   double BRR, BRL, DL, F;
@@ -611,8 +624,8 @@ void PACE::OUTEM(int ICTL, QTextStream& s, int MODE, double EEML, double AEML) {
                 }
             }
           s << "</tr>";
-          fprintf(f09,"\\par | dSig/dOmega  | ");
-          s << "<tr><td>dSig/dOmega</td>";
+          fprintf(f09,"\\par | d{\\uc1\\u963?}/d{\\uc1\\u937?}        | ");
+          s << "<tr><td>d&sigma;/d&Omega;</td>";
           for(I=1; I<=18; I++) {
               TET=(I-0.5)*0.1745;
               _DSIG[I]=eN[MODE][32][I]/(_NCASC*sin(TET)*0.1745*6.2832)*_SIGMA;

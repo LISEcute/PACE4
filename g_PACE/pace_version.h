@@ -1,5 +1,5 @@
-#define PACE_version "Version 4.38.3"
-#define PACE_date    "Last revision 8-Nov-2026"
+#define PACE_version "Version 4.38.5"
+#define PACE_date    "Last revision 10-Nov-2026"
 
 #define Max_NCASC 1000000
 #define Max_EBIN  4000
@@ -253,3 +253,29 @@
 // - Add PNG export
 
 // 4.38.3    11/08/26 - About dialog correction
+
+// 4.38.4    11/09/26 - Barrierless-fission treatment for high-spin events
+// - Preserve the corrected single-draw initial-spin sampling and FYRST setting.
+// - Terminate rotationally unstable states as barrierless fission when the
+//   spin-dependent barrier vanishes and the zero-spin barrier remains positive.
+// - Prevent artificial E2 cascades from creating surviving high-spin residues.
+// - Include these events in Total fission and report their count, fraction and
+//   cross section separately, without discarding events or renormalizing yields.
+// - Retain statistical competition for positive barriers and the existing
+//   treatment of bound gamma traps; reject invalid barrier inputs.
+// - Document the terminal approximation: no fast-fission timescale,
+//   prescission dynamics or fragment distributions are calculated.
+// - Reproduce the 48Ca+124Sn, 300-MeV, seed-708849395 case: Yb-172 survivors
+//   2446 -> 0; 4135 barrierless events within 4483 total fission events of 10000.
+// - Verify unchanged sampled spins and byte-identical low-spin controls;
+//   ten end-to-end cases give matching MSVC and MinGW results.
+
+// 4.38.5    11/10/26 - HTML and RTF output notation
+// - Superscript isotope mass numbers in residual angular-distribution headings.
+// - Subscript Z and XY in residual-velocity components.
+// - Use Greek sigma for velocity uncertainty and d(sigma)/d(Omega) table labels.
+// - Separate the longitudinal uncertainty and transverse rms term with a
+//   semicolon and preserved extra spacing.
+// - Use scoped RTF superscript/subscript and Unicode controls; preserve table
+//   alignment and keep scientific CS4 and traceback outputs byte-identical.
+// - Synchronize application, About dialog, report and executable versions.

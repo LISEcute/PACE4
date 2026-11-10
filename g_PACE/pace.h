@@ -36,6 +36,7 @@ private:
 
     double FISROT(double A, double Z, double AL, double BARFAC);
     double SIERK(double A , double Z, double AL, double BARFAC);
+    bool isBarrierlessFission(const fusion_event& c) const;
     void OUTEM(int ICTL, QTextStream& s, int MODE=0, double EEML=0, double AEML=0);
     void MOMENT(int ID,double A, double AP, int MODE, double EP,
                 fusion_event *f, QTextStream& s);

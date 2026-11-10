@@ -1,0 +1,80 @@
+PACE4 4.38.4: termination beyond rotational stability
+9 November 2026
+
+Problem and diagnosis
+
+For 48Ca + 124Sn at Elab=300 MeV, FYRST=0, 10,000 cascades and seed
+708849395, 4.38.3 reports 2,446 unchanged 172Yb residues. Every one starts
+at J>=117 hbar and follows the artificial E2 yrast cascade. The original
+PACE instructions explicitly describe this cascade as non-statistical;
+it is a treatment of spin-inhibited decay, not a calculation of survival
+of a rotationally unstable nucleus.
+
+The change in visibility since 4.36 is caused by the corrected initial-spin
+sampler in 4.37. The original loop draws a fresh random number for every
+cumulative-probability bin, strongly biasing the result toward low spin.
+The corrected single-draw sampler remains unchanged.
+
+Physical interpretation and scope
+
+A rotationally vanishing fission barrier marks the loss of the metastable
+compound-nucleus configuration in the macroscopic barrier model. Such a
+configuration cannot be treated as a bound residue merely because a level
+density table supplies no available transitions. High-spin capture beyond
+that limit belongs to the barrierless/fast-fission regime rather than the
+ordinary compound-nucleus statistical cascade.
+
+This release uses a terminal barrierless-fission approximation within
+PACE's existing assumption that the sampled projectile+target system is
+formed. It does not calculate formation competition, quasifission,
+prescission emission, dissipation, a fast-fission timescale, or fragment
+distributions. Its barrierless cross section is therefore a model-defined
+endpoint contribution, not a validated dynamical prediction.
+
+Implementation
+
+Before statistical channel selection at each (Z,N,Ex,J), inspect the
+already calculated barrier. Terminate as fission when the spin-dependent
+barrier is exactly zero while the zero-spin barrier and barrier multiplier
+are positive and finite. This guards against mistaking missing/invalid
+barriers or a zero multiplier for rotational instability. A positive
+barrier, even a small one, retains ordinary statistical competition.
+An empty level-density table by itself never triggers this treatment.
+
+The existing SIERK() wrapper is retained: in particular its ordinary
+IS=0 branch uses the Cohen-Plasil-Swiatecki FISROT table. This change does
+not replace that model with the full Sierk BARFIT fit. For 172Yb in this
+calculation, the active table first gives zero barrier at J=103 hbar.
+FYRST, level densities, sampled spins and input cross-section normalization
+are unchanged. Barrierless events are counted in Total fission with a
+separate reported subset; they are not discarded or renormalized away.
+
+The binary traceback retains its existing format and fission mode 6.
+Barrierless endpoints have fission probability 1 and no emitted particle
+energy/angle. No synthetic statistical width is passed to the lifetime
+calculation. Positive-barrier yrast traps retain the legacy gamma treatment.
+
+Validation
+
+The reported seed gives 0 unchanged 172Yb residues, 4,135 barrierless
+events and 4,483 total fission events, with all 10,000 cascades accounted
+for. Regression coverage compares individual initial spins with 4.38.3,
+checks all high-spin traces terminate without artificial gamma emission,
+tests J=102/103 boundary cases, FYRST=1 and output without traceback,
+and compares even/odd low-spin and bound gamma-trap controls byte-for-byte.
+
+Sources
+
+1. Original PACE instructions, g_PACE/fortran/PACE_INST2.TXT, items 6 and 10.
+   Item 10 describes the artificial, non-statistical E2 yrast cascade.
+2. A. J. Sierk, Phys. Rev. C 33, 2039 (1986),
+   "Macroscopic model of rotating nuclei".
+   https://doi.org/10.1103/PhysRevC.33.2039
+3. O. B. Tarasov et al., Eur. Phys. J. A 54, 66 (2018),
+   "Fission fragment yields from heavy-ion-induced reactions measured
+   with a fragment separator", Table 1 and discussion of vanishing
+   fission barriers and the distinction between fusion-fission and
+   fast fission. This supplies the regime distinction, not a numerical
+   calibration for 48Ca+124Sn.
+   https://doi.org/10.1140/epja/i2018-12500-0
+   https://lise.frib.msu.edu/paper/238U_FusionFission_e547.pdf

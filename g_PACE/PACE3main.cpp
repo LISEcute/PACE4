@@ -220,6 +220,8 @@ int PACE::PACE3(const char *filename_rtf, const char *filename_evt,
   int     IXRSM[5], IXPR[5], IXMIN[5], NSPC[5][52] ;     //NOT transported
   int I, L, K, J, IST, II;
   double SLEV, Fprob=0;   // FPROB - Fission probability
+  bool barrierlessFission = false;
+  int barrierlessFissionEvents = 0;
 
   double  ERGNOT=0, EP=0, AC, AP, FISSBR,EU,SC;
   int MODE=2;
@@ -850,8 +852,14 @@ L29:       //  CIKL here
   Fprob=0.;
   SPROB=0.;
   _IPROB=0;
+  _LFISS=0;
+  barrierlessFission = isBarrierlessFission(c);
+  // Beyond the rotational stability limit, terminate as barrierless fission.
+  // Do not invent a statistical width or let an empty level-density table
+  // turn this state into a surviving residue via the artificial E2 cascade.
+  if(barrierlessFission) Fprob=1.;
   //     IPROBP COUNTS PARTICLE OUTPUT
-  for(K=1; K<=MODES; K++)
+  for(K=1; !barrierlessFission && K<=MODES; K++)
     {
       PROBM[K]=0.;                      //     PROBM IS MAXIMUM PROBABILITY FOR MODE (CHANNEL) K.
       if(EXRSM[K]<=0.) continue;
@@ -898,7 +906,7 @@ L29:       //  CIKL here
       if(LERG==I)LERG=0;
 
       //==========================================
-      if(_IPROB==0)
+      if(_IPROB==0 && !barrierlessFission)
         {           //     FOLLOWING INSERT FORCES DECAY THRU E2 GAMMA YRAST CASCADE
 
           ERGNOT=a[I]->Ex;
@@ -930,7 +938,14 @@ L3882:
       else  {
           //==========================================
 
-          SEARCH(a[I],c,MODE, *htmlStream);
+          if(barrierlessFission) {
+              ++barrierlessFissionEvents;
+              a[I]->Ex=-1.;
+              a[I]->particle_energy=0.;
+              a[I]->particle_angle=0.;
+          } else {
+              SEARCH(a[I],c,MODE, *htmlStream);
+          }
 
           if(a[I]->Ex<0) {    // fission
               csi.Ex = a[I]->Ex = 0.;
@@ -1123,6 +1138,18 @@ L201:
 
   fprintf(f09,"\\par\\par\\par\\f2\\cf3\\b\\fs30   ------   Output results for compound nucleus decay -----\\par\\f0\\b0\\cf0\\fs16");
   *htmlStream << "<p>&nbsp;</p><p>&nbsp;</p><h2 align=center> Output results for compound nucleus decay </h2>";
+  if(barrierlessFissionEvents > 0) {
+      const double fraction = double(barrierlessFissionEvents)/_NCASC;
+      fprintf(f09,"\\par Barrierless fission (included in Total fission): %d events, %.4g percent, %.6g mb."
+                  "\\par The rotational fission barrier vanished. These cascades terminate without an artificial gamma cascade."
+                  " No fast-fission timescale, prescission emission, or fragment distribution is calculated.\\par",
+              barrierlessFissionEvents,100.*fraction,_SIGMA*fraction);
+      *htmlStream << "<p><b>Barrierless fission (included in Total fission): "
+                  << barrierlessFissionEvents << " events, " << QString::number(100.*fraction)
+                  << " percent, " << QString::number(_SIGMA*fraction) << " mb.</b></p>"
+                     "<p>The rotational fission barrier vanished. These cascades terminate without an artificial gamma cascade. "
+                     "No fast-fission timescale, prescission emission, or fragment distribution is calculated.</p>";
+  }
   II=1;
   htmlStream->flush();
   PRODCT(II,IZMAX,INMAX,_NCASC,a,filename_cs, *htmlStream);

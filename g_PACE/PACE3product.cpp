@@ -247,10 +247,10 @@ s <<"<h2 align=center>1. Yields of residual nuclei</h2><table align=center cellp
           plotLabel = QString("2.%1 Energy and angular distribution of ALL residual nuclei").arg(I);
       }
       else     {
-          fprintf(f09,"residual nucleus  Z=\\cf1 %d\\cf3    N=\\cf1 %d\\cf3   \\cf2 (%d%.2s)\\cf3 ",
+          fprintf(f09,"residual nucleus  Z=\\cf1 %d\\cf3    N=\\cf1 %d\\cf3   \\cf2 ({\\super %d}%.2s)\\cf3 ",
                                 IZNUC[I],INNUC[I],IZNUC[I]+INNUC[I],ElementName(IZNUC[I]).toStdString().c_str());
           s << " residual nucleus Z = <span style=\"color:blue\">" << qbuf.number(IZNUC[I]) << "</span> and  N = <span style=\"color:blue\">" << qbuf.number(INNUC[I]) << "</span> ("
-               << qbuf.number(IZNUC[I]+INNUC[I]) << ElementName(IZNUC[I])[0] <<  ElementName(IZNUC[I])[1] << ")</h3>";
+               << "<sup>" << qbuf.number(IZNUC[I]+INNUC[I]) << "</sup>" << ElementName(IZNUC[I]) << ")</h3>";
           plotLabel = QString("2.%1 Energy and angular distribution of residual nucleus Z = %2 and N = %3 (%4%5)")
                           .arg(I).arg(IZNUC[I]).arg(INNUC[I])
                           .arg(IZNUC[I] + INNUC[I]).arg(ElementName(IZNUC[I]));
@@ -447,11 +447,11 @@ char s30[129] = "\\par "
 //char *s1 = "\\par"
 //"              |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |";
 
-char sVelocity[106] = "\\par\\i\\fs14\\cf4         Residual Velocity/c \\i0  Vz=%.2e(sig=%.2e)    root-mean-square Vxy=%.2e\\fs16\\cf0 ";
+const char sVelocity[] = "\\par\\i\\fs14\\cf4         Residual velocity/c \\i0  V{\\sub Z} = %.2e ({\\uc1\\u963?} = %.2e);{\\uc1\\u8194?} rms V{\\sub XY} = %.2e\\fs16\\cf0 ";
 char s32[21] = "\\par               |";
 char s36[20] = "\\par %5.1f -%6.1f |";
 char s38[20] = "\\par  Above %6.1f |";
-char s53[21] = "\\par dSigma/dOmega |";
+const char s53[] = "\\par d{\\uc1\\u963?}/d{\\uc1\\u937?}         |";
 char s15[21] = "\\par               |";
 char sT[21] =  "\\par  Total        |";
 char sB[20] =  "\\par  Below %6.1f |";
@@ -537,7 +537,7 @@ if(_INPUT==1 && GlobSum > 2 && NP!=16) {
   dvxy = sqrt( s_vxy / GlobSum );
 
   fprintf(f09,sVelocity,vz,dvz,dvxy);
-  s << "<p><em> Residual velocity/c </em> Vz = " << qbuf.number(vz,'e',2) << "(sig = " << qbuf.number(dvz,'e',2) << ") rms Vxy = " << qbuf.number(dvxy,'e',2) << "</p><p>&nbsp;</p>";
+  s << "<p><em> Residual velocity/c </em> V<sub>Z</sub> = " << qbuf.number(vz,'e',2) << " (&sigma; = " << qbuf.number(dvz,'e',2) << ");&ensp; rms V<sub>XY</sub> = " << qbuf.number(dvxy,'e',2) << "</p><p>&nbsp;</p>";
 }
 
 s.flush();
@@ -628,7 +628,7 @@ for(k=1;k<=18;k++) {
                 }
       }
       fprintf(f09,s53);
-      s << "</tr><tr><td>dSig/dOmeg</td>";
+      s << "</tr><tr><td>d&sigma;/d&Omega;</td>";
 
       for(k=1;k<=18;k++){
            if(DSIG[k]>0) {fprintf(f09,sGb,DSIG[k]); s << "<td>" << qSetRealNumberPrecision(2) << (DSIG[k]) << "</td>";}
@@ -707,7 +707,7 @@ for(k=1;k<=18;k++) {
                 if(NR[NP][32][k]>0) {fprintf(f09,sD,NR[NP][32][k]);s << "<th>" << NR[NP][32][k] << "</th>";}
                 else               { fprintf(f09,sDe); s << "<th></th>";}
 
-      s << "</tr><tr><td>dSig/dOmeg</td>";
+      s << "</tr><tr><td>d&sigma;/d&Omega;</td>";
       fprintf(f09,s53);
       for(k=19;k<=36;k++) 
            if(DSIG[k]>0) {fprintf(f09,sGb,DSIG[k]); s << "<td align=center>" << DSIG[k] << "</td>";}
